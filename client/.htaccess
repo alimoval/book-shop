@@ -1,5 +1,10 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /api/ 
-    RewriteRule (.*) http://rest/server/api/$1 [L] 
+    RewriteRule (.*) http://rest/server/$1 [L] 
+
+       # If the requested filename exists, simply serve it.
+    # We only want to let Apache serve files and not directories.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule .? - [L]
+
 </IfModule>
