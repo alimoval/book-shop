@@ -1,7 +1,15 @@
 <?php
 
+require_once '../libs/RESTServer.php';
+
 class Cars
 {
+
+    public function __construct()
+    {
+        echo 'hello';
+    }
+
     public function getCars($id)
     {
     }
@@ -22,3 +30,5 @@ class Cars
     {
     }
 }
+
+$obj = new RESTServer();
