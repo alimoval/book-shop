@@ -17,19 +17,16 @@ class RESTServer
                 $result = $service->getCars();
             }
             print_r(json_encode($result));
-        } elseif($method == "POST"){
+        } elseif ($method == "POST") {
+            header('Access-Control-Allow-Methods: POST');
             $result = $service->postCar();
-            if($result){
-                echo json_encode(array(
-                    'message' => 'Post Created'
-                ));
-            } else {
-                echo json_encode(array(
-                    'message' => 'Post Not Created'
-                ));
-            }
+        } elseif ($method == "PUT") {
+            header('Access-Control-Allow-Methods: PUT');
+            $result = $service->updateCar($id);
+        } elseif ($method == "DELETE") {
+            header('Access-Control-Allow-Methods: DELETE');
+            $result = $service->deleteCar($id);
         }
-
 
     }
 

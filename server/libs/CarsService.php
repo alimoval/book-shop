@@ -33,14 +33,12 @@ class CarsService
 
         $cars_array = array();
         $cars_array['data'] = array();
-
         // $num = $result->rowCount();
 
         //     if ($num > 0) {
         //     } else {
         //         echo json_encode(array('message' => 'No cars found'));
         //     }
-
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             extract($row);
 
@@ -115,36 +113,27 @@ class CarsService
             town = :town,
             images = :images';
         $stmt = $this->connection->prepare($query);
-        
-        $this->model = htmlspecialchars(strip_tags($this->model));
-        $this->tm = htmlspecialchars(strip_tags($this->tm));
-        $this->price = htmlspecialchars(strip_tags($this->price));
-        $this->color = htmlspecialchars(strip_tags($this->color));
-        $this->year = htmlspecialchars(strip_tags($this->year));
-        $this->gas = htmlspecialchars(strip_tags($this->gas));
-        $this->odo = htmlspecialchars(strip_tags($this->odo));
-        $this->engine = htmlspecialchars(strip_tags($this->engine));
-        $this->town = htmlspecialchars(strip_tags($this->town));
-        $this->images = htmlspecialchars(strip_tags($this->images));
+        $stmt->bindParam(':model', htmlspecialchars(strip_tags($this->model)));
+        $stmt->bindParam(':tm', htmlspecialchars(strip_tags($this->tm)));
+        $stmt->bindParam(':price', htmlspecialchars(strip_tags($this->price)));
+        $stmt->bindParam(':color', htmlspecialchars(strip_tags($this->color)));
+        $stmt->bindParam(':year', htmlspecialchars(strip_tags($this->year)));
+        $stmt->bindParam(':gas', htmlspecialchars(strip_tags($this->gas)));
+        $stmt->bindParam(':odo', htmlspecialchars(strip_tags($this->odo)));
+        $stmt->bindParam(':engine', htmlspecialchars(strip_tags($this->engine)));
+        $stmt->bindParam(':town', htmlspecialchars(strip_tags($this->town)));
+        $stmt->bindParam(':images', htmlspecialchars(strip_tags($this->images)));
 
-        $stmt->bindParam(':model', $this->model);
-        $stmt->bindParam(':tm', $this->tm);
-        $stmt->bindParam(':price', $this->price);
-        $stmt->bindParam(':color', $this->color);
-        $stmt->bindParam(':year', $this->year);
-        $stmt->bindParam(':gas', $this->gas);
-        $stmt->bindParam(':odo', $this->odo);
-        $stmt->bindParam(':engine', $this->engine);
-        $stmt->bindParam(':town', $this->town);
-        $stmt->bindParam(':images', $this->images);
-
-        if($stmt->execute()){
-            return true;
+        if ($stmt->execute()) {
+            echo json_encode(array(
+                'message' => 'Car Created',
+            ));
+        } else {
+            echo json_encode(array(
+                'message' => 'Car Not Created',
+            ));
+            printf("Error: %s.\n", $stmt->error);
         }
-
-        printf("Error: %s.\n", $stmt->error);
-        return false;
-
         // {
         //     "model": "Gets",
         //     "tm": "Hyndai",
@@ -157,5 +146,75 @@ class CarsService
         //     "town": "Mykolaiv",
         //     "images": "https://cdn1.riastatic.com/photosnew/auto/photo/hyundai_getz__243708576fx.webp"
         // }
+    }
+
+    public function updateCar($id)
+    {
+        $this->data = json_decode(file_get_contents("php://input"));
+        $this->model = $this->data->model;
+        $this->tm = $this->data->tm;
+        $this->price = $this->data->price;
+        $this->color = $this->data->color;
+        $this->year = $this->data->year;
+        $this->gas = $this->data->gas;
+        $this->odo = $this->data->odo;
+        $this->engine = $this->data->engine;
+        $this->town = $this->data->town;
+        $this->images = $this->data->images;
+
+        $query = 'UPDATE ' . $this->table . '
+        SET model = :model,
+            tm = :tm,
+            price = :price,
+            color = :color,
+            year = :year,
+            gas = :gas,
+            odo = :odo,
+            engine = :engine,
+            town = :town,
+            images = :images
+            WHERE id = :id';
+        $stmt = $this->connection->prepare($query);
+
+        $stmt->bindParam(':model', htmlspecialchars(strip_tags($this->model)));
+        $stmt->bindParam(':tm', htmlspecialchars(strip_tags($this->tm)));
+        $stmt->bindParam(':price', htmlspecialchars(strip_tags($this->price)));
+        $stmt->bindParam(':color', htmlspecialchars(strip_tags($this->color)));
+        $stmt->bindParam(':year', htmlspecialchars(strip_tags($this->year)));
+        $stmt->bindParam(':gas', htmlspecialchars(strip_tags($this->gas)));
+        $stmt->bindParam(':odo', htmlspecialchars(strip_tags($this->odo)));
+        $stmt->bindParam(':engine', htmlspecialchars(strip_tags($this->engine)));
+        $stmt->bindParam(':town', htmlspecialchars(strip_tags($this->town)));
+        $stmt->bindParam(':images', htmlspecialchars(strip_tags($this->images)));
+        $stmt->bindParam(':id', htmlspecialchars(strip_tags($id)));
+
+        if ($stmt->execute()) {
+            echo json_encode(array(
+                'message' => 'Car Updated',
+            ));
+        } else {
+            echo json_encode(array(
+                'message' => 'Car Not Updated',
+            ));
+            printf("Error: %s.\n", $stmt->error);
+
+        }
+    }
+
+    public function deleteCar($id)
+    {
+        $query = 'DELETE FROM ' . $this->table . ' WHERE id = ?';
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(1, $id);
+        if ($stmt->execute()) {
+            echo json_encode(array(
+                'message' => 'Car Deleted',
+            ));
+        } else {
+            echo json_encode(array(
+                'message' => 'Car Not Updated',
+            ));
+            printf("Error: %s.\n", $stmt->error);
+        }
     }
 }
