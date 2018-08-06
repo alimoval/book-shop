@@ -8,7 +8,18 @@ class RESTServer
         $url = $_SERVER['REQUEST_URI'];
         list($a, $b, $c, $table, $id) = explode("/", $url);
         list($id, $viewType) = explode(".", $id);
-        echo $viewType;
+        
+        header('Access-Control-Allow-Origin: *');
+        if ($viewType == "txt") {
+            header('Content-type: text/plain');
+            header('Content-Disposition: attachment; filename="' . $table . $id . '.txt"');
+        } elseif ($viewType == "xml") {
+            header('Content-type: text/xml');
+            header('Content-Disposition: attachment; filename="' . $table . $id . '.xml"');
+        } else {
+            header('Content-Type: application/json');
+        }
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
 
         if ($method == "GET") {
             if ($id > 0) {
@@ -24,7 +35,5 @@ class RESTServer
         } elseif ($method == "DELETE") {
             $result = $service->delete($id);
         }
-
     }
-
 }
