@@ -23,9 +23,11 @@ class CarsService
     {
         $db = new SQL();
         $this->connection = $db->connect();
+
+        // Check is User authorized
     }
 
-    public function getCars()
+    public function getAll()
     {
         $query = 'SELECT * FROM ' . $this->table;
         $stmt = $this->connection->prepare($query);
@@ -62,7 +64,7 @@ class CarsService
         return $cars_array;
     }
 
-    public function getCar($id)
+    public function getOne($id)
     {
         $query = 'SELECT * FROM ' . $this->table . ' WHERE id = ?';
         $stmt = $this->connection->prepare($query);
@@ -87,8 +89,10 @@ class CarsService
         return $car;
     }
 
-    public function postCar()
+    public function post()
     {
+        header('Access-Control-Allow-Methods: POST');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
         $this->data = json_decode(file_get_contents("php://input"));
         $this->model = $this->data->model;
         $this->tm = $this->data->tm;
@@ -148,8 +152,10 @@ class CarsService
         // }
     }
 
-    public function updateCar($id)
+    public function update($id)
     {
+        header('Access-Control-Allow-Methods: PUT');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
         $this->data = json_decode(file_get_contents("php://input"));
         $this->model = $this->data->model;
         $this->tm = $this->data->tm;
@@ -201,8 +207,10 @@ class CarsService
         }
     }
 
-    public function deleteCar($id)
+    public function delete($id)
     {
+        header('Access-Control-Allow-Methods: DELETE');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
         $query = 'DELETE FROM ' . $this->table . ' WHERE id = ?';
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(1, $id);
