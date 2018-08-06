@@ -9,5 +9,3 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Contr
 
 $carsService = new CarsService();
 $server = new RESTServer($carsService);
-
-
