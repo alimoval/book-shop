@@ -1,5 +1,5 @@
 <?php
-require_once './Response.php';
+require_once 'Response.php';
 
 class JsonResponse extends Response
 {
