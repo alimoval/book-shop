@@ -11,11 +11,15 @@ class RESTServer
         
         header('Access-Control-Allow-Origin: *');
         if ($viewType == "txt") {
-            header('Content-type: text/plain');
+            header('Content-Type: text/plain');
             header('Content-Disposition: attachment; filename="' . $table . $id . '.txt"');
         } elseif ($viewType == "xml") {
-            header('Content-type: text/xml');
+            header('Content-Type: text/xml');
             header('Content-Disposition: attachment; filename="' . $table . $id . '.xml"');
+        } elseif ($viewType == "pdf"){
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="' . $table . $id . '.pdf"');
+            header('Content-Transfer-Encoding: binary');
         } else {
             header('Content-Type: application/json');
         }
@@ -28,6 +32,7 @@ class RESTServer
                 $result = $service->getAll();
             }
             print_r(json_encode($result));
+            // print_r(xmlrpc_encode($result));
         } elseif ($method == "POST") {
             $result = $service->post();
         } elseif ($method == "PUT") {
