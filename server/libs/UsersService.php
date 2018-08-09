@@ -35,7 +35,6 @@ class UsersService
             );
             array_push($users_array['data'], $user);
         }
-
         return $users_array;
     }
 
@@ -52,7 +51,6 @@ class UsersService
             'email' => $row['email'],
             'password' => $row['password'],
         );
-
         return $user;
     }
 
@@ -70,13 +68,9 @@ class UsersService
         $stmt->bindParam(':email', htmlspecialchars(strip_tags($this->email)));
         $stmt->bindParam(':password', htmlspecialchars(strip_tags($this->password)));
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'User Created',
-            ));
+            return array('message' => 'User Created');
         } else {
-            echo json_encode(array(
-                'message' => 'User Not Created',
-            ));
+            return array('message' => 'User Not Created');
             printf("Error: %s.\n", $stmt->error);
         }
     }
@@ -100,15 +94,10 @@ class UsersService
         $stmt->bindParam(':email', htmlspecialchars(strip_tags($this->email)));
         $stmt->bindParam(':password', htmlspecialchars(strip_tags($this->password)));
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'User Updated',
-            ));
+            return array('message' => 'User Updated');
         } else {
-            echo json_encode(array(
-                'message' => 'User Not Updated',
-            ));
+            return array('message' => 'User Not Updated');
             printf("Error: %s.\n", $stmt->error);
-
         }
     }
 
@@ -120,13 +109,9 @@ class UsersService
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(1, $id);
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'User Deleted',
-            ));
+            return array('message' => 'User Deleted');
         } else {
-            echo json_encode(array(
-                'message' => 'User Not Updated',
-            ));
+            return array('message' => 'User Not Deleted');
             printf("Error: %s.\n", $stmt->error);
         }
     }

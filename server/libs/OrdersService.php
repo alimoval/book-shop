@@ -44,7 +44,6 @@ class OrdersService
             );
             array_push($users_array['data'], $user);
         }
-
         return $users_array;
     }
 
@@ -71,7 +70,6 @@ class OrdersService
             'name' => $row['user_name'],
             'date' => $row['date'],
         );
-
         return $user;
     }
 
@@ -89,13 +87,9 @@ class OrdersService
         $stmt->bindParam(':car_id', htmlspecialchars(strip_tags($this->car_id)));
         $stmt->bindParam(':user_id', htmlspecialchars(strip_tags($this->user_id)));
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'Order Created',
-            ));
+            return array('message' => 'Order Created');
         } else {
-            echo json_encode(array(
-                'message' => 'Order Not Created',
-            ));
+            return array('message' => 'Order Not Created');
             printf("Error: %s.\n", $stmt->error);
         }
     }
@@ -119,13 +113,9 @@ class OrdersService
         $stmt->bindParam(':car_id', htmlspecialchars(strip_tags($this->car_id)));
         $stmt->bindParam(':user_id', htmlspecialchars(strip_tags($this->user_id)));
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'Order Updated',
-            ));
+            return array('message' => 'Order Updated');
         } else {
-            echo json_encode(array(
-                'message' => 'Order Not Updated',
-            ));
+            return array('message' => 'Order Not Updated');
             printf("Error: %s.\n", $stmt->error);
         }
     }
@@ -138,13 +128,9 @@ class OrdersService
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(1, $id);
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'Order Deleted',
-            ));
+            return array('message' => 'Order Deleted');
         } else {
-            echo json_encode(array(
-                'message' => 'Order Not Updated',
-            ));
+            return array('message' => 'Order Not Updated');
             printf("Error: %s.\n", $stmt->error);
         }
     }

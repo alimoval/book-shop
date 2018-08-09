@@ -6,7 +6,6 @@ class CarsService
     private $connection;
     private $table = 'cars';
     private $data;
-
     public $id;
     public $model;
     public $tm;
@@ -23,7 +22,6 @@ class CarsService
     {
         $db = new SQL();
         $this->connection = $db->connect();
-
         // Check is User authorized
     }
 
@@ -32,18 +30,10 @@ class CarsService
         $query = 'SELECT * FROM ' . $this->table;
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
-
         $cars_array = array();
         $cars_array['data'] = array();
-        // $num = $result->rowCount();
-
-        //     if ($num > 0) {
-        //     } else {
-        //         echo json_encode(array('message' => 'No cars found'));
-        //     }
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             extract($row);
-
             $car = array(
                 'id' => $id,
                 'model' => $model,
@@ -57,10 +47,8 @@ class CarsService
                 'town' => $town,
                 'images' => $images,
             );
-
             array_push($cars_array['data'], $car);
         }
-
         return $cars_array;
     }
 
@@ -71,7 +59,6 @@ class CarsService
         $stmt->bindParam(1, $id);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
         $car = array(
             'id' => $row['id'],
             'model' => $row['model'],
@@ -85,7 +72,6 @@ class CarsService
             'town' => $row['town'],
             'images' => $row['images'],
         );
-
         return $car;
     }
 
@@ -104,7 +90,6 @@ class CarsService
         $this->engine = $this->data->engine;
         $this->town = $this->data->town;
         $this->images = $this->data->images;
-
         $query = 'INSERT INTO ' . $this->table . '
         SET model = :model,
             tm = :tm,
@@ -127,29 +112,12 @@ class CarsService
         $stmt->bindParam(':engine', htmlspecialchars(strip_tags($this->engine)));
         $stmt->bindParam(':town', htmlspecialchars(strip_tags($this->town)));
         $stmt->bindParam(':images', htmlspecialchars(strip_tags($this->images)));
-
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'Car Created',
-            ));
+            return array('message' => 'Car Created');
         } else {
-            echo json_encode(array(
-                'message' => 'Car Not Created',
-            ));
+            return array('message' => 'Car Not Created');
             printf("Error: %s.\n", $stmt->error);
         }
-        // {
-        //     "model": "Gets",
-        //     "tm": "Hyndai",
-        //     "price": "6000",
-        //     "color": "gold",
-        //     "year": "2006",
-        //     "gas": "gas",
-        //     "odo": "180000",
-        //     "engine": "1400",
-        //     "town": "Mykolaiv",
-        //     "images": "https://cdn1.riastatic.com/photosnew/auto/photo/hyundai_getz__243708576fx.webp"
-        // }
     }
 
     public function update($id)
@@ -167,7 +135,6 @@ class CarsService
         $this->engine = $this->data->engine;
         $this->town = $this->data->town;
         $this->images = $this->data->images;
-
         $query = 'UPDATE ' . $this->table . '
         SET model = :model,
             tm = :tm,
@@ -181,7 +148,6 @@ class CarsService
             images = :images
             WHERE id = :id';
         $stmt = $this->connection->prepare($query);
-
         $stmt->bindParam(':model', htmlspecialchars(strip_tags($this->model)));
         $stmt->bindParam(':tm', htmlspecialchars(strip_tags($this->tm)));
         $stmt->bindParam(':price', htmlspecialchars(strip_tags($this->price)));
@@ -193,17 +159,11 @@ class CarsService
         $stmt->bindParam(':town', htmlspecialchars(strip_tags($this->town)));
         $stmt->bindParam(':images', htmlspecialchars(strip_tags($this->images)));
         $stmt->bindParam(':id', htmlspecialchars(strip_tags($id)));
-
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'Car Updated',
-            ));
+            return array('message' => 'Car Updated');
         } else {
-            echo json_encode(array(
-                'message' => 'Car Not Updated',
-            ));
+            return array('message' => 'Car Not Updated');
             printf("Error: %s.\n", $stmt->error);
-
         }
     }
 
@@ -215,13 +175,9 @@ class CarsService
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(1, $id);
         if ($stmt->execute()) {
-            echo json_encode(array(
-                'message' => 'Car Deleted',
-            ));
+            return array('message' => 'Car Deleted');
         } else {
-            echo json_encode(array(
-                'message' => 'Car Not Updated',
-            ));
+            return array('message' => 'Car Not Updated');
             printf("Error: %s.\n", $stmt->error);
         }
     }
