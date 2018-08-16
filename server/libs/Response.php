@@ -73,7 +73,7 @@ class Response
         511 => 'Network Authentication Required',                             // RFC6585
     );
 
-    public function __construct($content = '', int $status = 200, array $headers = [])
+    public function __construct($content = '', $status = 200, array $headers = [])
     {
         if (empty($content)) {
             $content = '';
@@ -99,7 +99,7 @@ class Response
     {
         return $this->version;
     }
-    public function setVersion(string $version)
+    public function setVersion($version)
     {
         $this->version = $version;
         return $this;
@@ -108,13 +108,13 @@ class Response
     {
         return $this->statusCode;
     }
-    public function setStatusCode(int $statusCode)
+    public function setStatusCode($statusCode)
     {
         $this->statusCode = $statusCode;
-        $this->statusText = self::$statusTexts[$statusCode] ?? 'unknown';
+        $this->statusText = self::$statusTexts[$statusCode] ? (self::$statusTexts[$statusCode]) : 'unknown';
         return $this;
     }
-    public function getStatusText(): string
+    public function getStatusText()
     {
         return $this->statusText;
     }

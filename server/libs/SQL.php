@@ -3,9 +3,9 @@
 class SQL
 {
     private $host = 'localhost';
-    private $db_name = 'rest';
-    private $username = 'root';
-    private $password = '';
+    private $db_name = 'user16';
+    private $username = 'user16';
+    private $password = 'user16';
     private $conn;
 
     public function connect()
