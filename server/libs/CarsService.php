@@ -23,12 +23,12 @@ class CarsService
         $db = new SQL();
         $this->connection = $db->connect();
         
-        if($_SERVER['PHP_AUTH_USER'] !== PHP_AUTH_USER && $_SERVER['PHP_AUTH_PW'] !== 'admin'){
-        header("WWW-Authenticate: Basic realm=\"thetutlarge\"");
-        header("HTTP\ 1.0 401 Unauthorized");
-        echo "Error";
-        // Check is User authorized
-        }
+        // if($_SERVER['PHP_AUTH_USER'] !== 'admin' && $_SERVER['PHP_AUTH_PW'] !== 'admin'){
+        // header("WWW-Authenticate: Basic realm=\"thetutlarge\"");
+        // header("HTTP\ 1.0 401 Unauthorized");
+        // echo "Error";
+        // // Check is User authorized
+        // }
     }
 
     public function getAll()
