@@ -1,5 +1,6 @@
 <?php
 require_once 'View.php';
+// require_once '../config.php';
 
 class RESTServer
 {   
