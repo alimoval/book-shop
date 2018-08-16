@@ -8,7 +8,7 @@ new Vue({
     },
     methods: {
         fetchCars: function () {
-            fetch('http://rest/server/api/cars/')
+            fetch('http://192.168.0.15/~user16/rest/client/api/cars')
                 .then((response) => {
                     if (response.ok) {
                         return response.json();

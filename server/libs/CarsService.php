@@ -62,21 +62,26 @@ class CarsService
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(1, $id);
         $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $car = array(
-            'id' => $row['id'],
-            'model' => $row['model'],
-            'tm' => $row['tm'],
-            'price' => $row['price'],
-            'color' => $row['color'],
-            'year' => $row['year'],
-            'gas' => $row['gas'],
-            'odo' => $row['odo'],
-            'engine' => $row['engine'],
-            'town' => $row['town'],
-            'images' => $row['images'],
-        );
-        return $car;
+        $cars_array = array();
+        $cars_array['data'] = array();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $car = array(
+                'id' => $id,
+                'model' => $model,
+                'tm' => $tm,
+                'price' => $price,
+                'color' => $color,
+                'year' => $year,
+                'gas' => $gas,
+                'odo' => $odo,
+                'engine' => $engine,
+                'town' => $town,
+                'images' => $images,
+            );
+            array_push($cars_array['data'], $car);
+        }
+        return $cars_array;
     }
 
     public function post()

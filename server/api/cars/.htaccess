@@ -11,6 +11,10 @@
 #     RewriteRule .? index.php [L]
 # </IfModule>
 
+<Limit GET POST PUT DELETE>
+    Allow from all
+</Limit>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On 
     RewriteBase /~user16/rest/server/api/cars/ 

@@ -11,7 +11,7 @@ class RESTServer
         $this->view = new View();
         $method = $_SERVER['REQUEST_METHOD'];
         $url = $_SERVER['REQUEST_URI'];
-        list($a, $b, $c, $table, $id) = explode("/", $url);
+        list($a, $b, $c, $d, $e, $table, $id) = explode("/", $url);
         list($id, $viewType) = explode(".", $id);
         if ($method == "GET") {
             if ($id > 0) {

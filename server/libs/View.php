@@ -39,8 +39,6 @@ class View
                 'Content-Transfer-Encoding'=>'binary']);
             $response->send();
         } else {
-            // header('Content-Type: application/json');
-            // print_r(json_encode($this->result));
             $jsonResponse = new JsonResponse($this->result, 200, ['Content-Type'=>'application/json']);
             $jsonResponse->send();
         }
