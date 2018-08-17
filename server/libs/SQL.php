@@ -1,12 +1,8 @@
 <?php
+require_once __DIR__."/../config.php";
 
 class SQL
 {
-    private $host = 'localhost';
-    // private $db_name = 'user16';
-    private $db_name = 'rest';
-    private $username = 'root';
-    private $password = '';
     private $conn;
 
     public function connect()
@@ -14,7 +10,7 @@ class SQL
         $this->conn = null;
 
         try {
-            $this->conn = new PDO('mysql:host='. $this->host . ';dbname=' . $this->db_name, $this->username, $this->password);
+            $this->conn = new PDO('mysql:host='. HOST . ';dbname=' . DB_NAME, USERNAME, PASSWORD);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             echo 'Connection Error: ' . $e->getMessage();

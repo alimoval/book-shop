@@ -17,8 +17,7 @@
 
 # <IfModule mod_rewrite.c>
 #     RewriteEngine On 
-#     # RewriteBase /~user16/rest/server/api/cars/ 
-#     RewriteBase /rest/server/api/cars/ 
+#     RewriteBase /~user16/rest/server/api/cars/ 
 #     RewriteCond %{REQUEST_FILENAME} !-f 
 #     RewriteCond %{REQUEST_FILENAME} !-d 
 #     RewriteRule ^.*$ index.php 
