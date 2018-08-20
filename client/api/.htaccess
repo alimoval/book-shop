@@ -1,0 +1,9 @@
+<Limit GET POST PUT DELETE>
+    Allow from all
+</Limit>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /api/ 
+    RewriteRule (.*) http://rest/server/api/$1 [P] 
+</IfModule>

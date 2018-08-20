@@ -1,19 +1,34 @@
 <template>
   <div class="container">
-      {{msg}}
-        <div class="row top-buffer">
-            <div class="col-sm-12" v-for="car in cars" v-bind:key='car.id'>
-                <a href="#">
-                    <div class="card">
-                        <img class="card-img-top" v-bind:src="car.images" alt="Card image cap" style="max-height: 170px;">
-                        <div class="card-body">
-                            <h5 class="card-title" style="color: grey;">{{car.tm}} {{car.model}}</h5>
-                            <p class="card-text" style="color: tomato;">
-                                <b>{{car.price}}</b>
-                            </p>
-                        </div>
-                    </div>
-                </a>
+        <div class="row top-buffer" v-for="car in cars" v-bind:key='car.id'>
+            <div class="col-sm-4">
+              <img class="img-fluid" v-bind:src="car.images" alt="Card image cap">
+            </div>
+            <div class="col-sm-8" style="text-align:left;">
+              <h4 style="color: grey;">{{car.tm}} {{car.model}}</h4>
+              <p>
+                    year: <b>{{car.year}}</b>
+                </p>
+                <p>
+                    odometr: <b>{{car.odo}}</b> km
+                </p>
+              <p>
+                    color: <b>{{car.color}}</b>
+                </p>
+              
+              <p>
+                    engine type: <b>{{car.gas}}</b>
+                </p>
+              
+              <p>
+                    engine amount: <b>{{car.engine}}</b>
+                </p>
+              <p>
+                    town: <b>{{car.town}}</b>
+                </p>
+                <p style="color: tomato;">
+                  Price: <b>${{car.price}}</b>
+              </p>
             </div>
         </div>
     </div>
@@ -25,16 +40,15 @@ export default {
   data() {
     return {
       cars: [],
-      msg: "Welcome to Car Details page"
+      message: null
     };
   },
   created() {
-    console.log(this.$route.params.id);
     this.fetchCar(this.$route.params.id);
   },
   methods: {
     fetchCar: function(id) {
-      fetch("http://rest/server/api/cars/"+id)
+      fetch("http://rest/server/api/cars/" + id)
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -48,12 +62,18 @@ export default {
               model: item.model,
               tm: item.tm,
               price: item.price,
+              color: item.color,
+              year: item.year,
+              gas: item.gas,
+              odo: item.odo,
+              engine: item.engine,
+              town: item.town,
               images: item.images
             });
           });
         })
         .catch(error => {
-          console.log(error);
+          this.message = error;
         });
     }
   }
