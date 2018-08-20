@@ -2,7 +2,7 @@
 require_once 'View.php';
 
 class RESTServer
-{   
+{
     private $view;
 
     public function __construct($service)
@@ -24,7 +24,11 @@ class RESTServer
         } elseif ($method == "POST") {
             $result = $service->post();
         } elseif ($method == "PUT") {
-            $result = $service->update($id);
+            if ($id === 'login') {
+                $result = $service->login();
+            } else {
+                $result = $service->update($id);
+            }
         } elseif ($method == "DELETE") {
             $result = $service->delete($id);
         }

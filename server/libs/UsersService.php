@@ -115,4 +115,14 @@ class UsersService
             printf("Error: %s.\n", $stmt->error);
         }
     }
+
+    public function login()
+    {
+        header('Access-Control-Allow-Methods: PUT');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
+        $this->data = json_decode(file_get_contents("php://input"));
+        $this->email = $this->data->email;
+        $this->password = $this->data->password;
+        return array('message' => 'User ' . $this->email . ' Logging In ' . $this->password);
+    }
 }

@@ -28,12 +28,15 @@
 </template>
 
 <script>
-  export default {
-    name: 'register',
-    data () {
-      return {
-        msg: 'Welcome to the Register Page'
-      }
+export default {
+  name: 'register',
+  data () {
+    return {
+      msg: 'Welcome to the Register Page'
     }
+  },
+  methods: {
+    
   }
+}
 </script>

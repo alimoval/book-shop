@@ -1,6 +1,5 @@
 <template>
   <div class='container'>
-    
         <div class='row' style='padding-top: 20px'>
             <div class='col-sm-4' v-for='order in orders' v-bind:key='order.id'>
                 <router-link :to='`/orders/${order.id}`'>
