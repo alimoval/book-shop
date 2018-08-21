@@ -63,14 +63,19 @@ class OrdersService
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(1, $id);
         $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $user = array(
-            'id' => $row['id'],
-            'car' => $row['car_model'],
-            'name' => $row['user_name'],
-            'date' => $row['date'],
-        );
-        return $user;
+        $orders_array = array();
+        $orders_array['data'] = array();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $order = array(
+                'id' => $id,
+                'model' => $car_model,
+                'name' => $user_name,
+                'date' => $date,
+            );
+            array_push($orders_array['data'], $order);
+        }
+        return $orders_array;
     }
 
     public function post()

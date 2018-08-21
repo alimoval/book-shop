@@ -22,13 +22,15 @@ class RESTServer
                 $result = $service->getAll();
             }
         } elseif ($method == "POST") {
-            $result = $service->post();
-        } elseif ($method == "PUT") {
             if ($id === 'login') {
                 $result = $service->login();
+            } elseif ($id === 'register') {
+                $result = $service->register();
             } else {
-                $result = $service->update($id);
+                $result = $service->post();    
             }
+        } elseif ($method == "PUT") {
+            $result = $service->update($id);
         } elseif ($method == "DELETE") {
             $result = $service->delete($id);
         }

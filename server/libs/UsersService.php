@@ -44,14 +44,19 @@ class UsersService
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(1, $id);
         $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $user = array(
-            'id' => $row['id'],
-            'name' => $row['name'],
-            'email' => $row['email'],
-            'password' => $row['password'],
-        );
-        return $user;
+        $users_array = array();
+        $users_array['data'] = array();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $user = array(
+                'id' => $id,
+                'name' => $name,
+                'email' => $email,
+                'password' => $password,
+            );
+            array_push($users_array['data'], $user);
+        }
+        return $users_array;
     }
 
     public function post()
@@ -118,11 +123,37 @@ class UsersService
 
     public function login()
     {
-        header('Access-Control-Allow-Methods: PUT');
+        header('Access-Control-Allow-Methods: POST');
         header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
         $this->data = json_decode(file_get_contents("php://input"));
         $this->email = $this->data->email;
         $this->password = $this->data->password;
+
+        $query = 'SELECT * FROM ' . $this->table . ' WHERE email = :email AND password = :password';
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':password', $this->password);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = array(
+            'id' => $row['id'],
+            'name' => $row['name'],
+            'email' => $row['email'],
+            'password' => $row['password'],
+        );
+
+        return $user;
+
+    }
+
+    public function register()
+    {
+        header('Access-Control-Allow-Methods: POST');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
+        $this->data = json_decode(file_get_contents("php://input"));
+        $this->email = $this->data->email;
+        $this->password = $this->data->password;
+
         return array('message' => 'User ' . $this->email . ' Logging In ' . $this->password);
     }
 }

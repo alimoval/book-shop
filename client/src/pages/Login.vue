@@ -31,13 +31,14 @@
 
 <script>
 export default {
-  name: 'home',
+  name: 'login',
   data () {
     return {
       msg: 'Welcome to the Login Page',
       password: null,
       email: null,
-      errors: []
+      errors: [],
+      message: null
     }
   },
   methods: {
@@ -55,9 +56,14 @@ export default {
     },
     proceedForm: function () {
       let data = {email: this.email, password: this.password}
-      this.$http.post('http://rest/server/api/users/login', data, {
-        emulateJSON: true
-      })
+      this.$http.post('http://rest/server/api/users/login', data)
+        .then(response => {
+          localStorage.setItem('user_id', response.body.id)
+          localStorage.setItem('user_name', response.body.name)
+        })
+        .catch(error => {
+          this.message = error
+        })
       this.$router.push('/')
     }
   }

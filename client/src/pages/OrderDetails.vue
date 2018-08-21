@@ -33,11 +33,13 @@ export default {
           throw new Error('Network response was not ok')
         })
         .then(json => {
-          this.orders.push({
-            id: json.id,
-            car: json.car,
-            name: json.name,
-            date: json.date
+          json['data'].forEach(item => {
+            this.orders.push({
+              id: item.id,
+              car: item.model,
+              name: item.name,
+              date: item.date
+            })
           })
         })
         .catch(error => {
