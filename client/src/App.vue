@@ -22,7 +22,7 @@
         <div class='message'></div>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view v-bind="userId"></router-view>
   </div>
 </template>
 
@@ -42,7 +42,7 @@ export default {
     checkUser: function () {
       this.userId = localStorage.getItem('user_id')
       this.userName = localStorage.getItem('user_name')
-      console.log(this.userId + ' ' + this.userName);
+      console.log(this.userId + ' ' + this.userName)
     },
     logout: function () {
       localStorage.removeItem('user_id')

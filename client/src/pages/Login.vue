@@ -46,7 +46,7 @@ export default {
       if (this.email && this.password) {
         this.proceedForm()
       }
-      this.errors = [];
+      this.errors = []
       if (!this.email) {
         this.errors.push('Требуется указать email.')
       }

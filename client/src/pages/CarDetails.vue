@@ -27,6 +27,9 @@
                 <p style='color: tomato;'>
                   Price: <b>${{car.price}}</b>
               </p>
+              <form action="" method='post'>
+                <input type="button" value="Buy">
+              </form>
             </div>
         </div>
     </div>
