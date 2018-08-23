@@ -32,6 +32,7 @@
 <script>
 export default {
   name: 'login',
+  props: ['userID'],
   data () {
     return {
       msg: 'Welcome to the Login Page',
