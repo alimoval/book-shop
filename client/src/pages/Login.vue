@@ -32,14 +32,14 @@
 <script>
 export default {
   name: 'login',
-  props: ['userID'],
   data () {
     return {
       msg: 'Welcome to the Login Page',
       password: null,
       email: null,
       errors: [],
-      message: null
+      message: null,
+      userId: null
     }
   },
   methods: {
@@ -60,12 +60,11 @@ export default {
       this.$http.post('http://rest/server/api/users/login', data)
         .then(response => {
           localStorage.setItem('user_id', response.body.id)
-          localStorage.setItem('user_name', response.body.name)
+          this.$emit('setUser', response.body.id)
         })
         .catch(error => {
           this.message = error
         })
-      this.$router.push('/')
     }
   }
 }

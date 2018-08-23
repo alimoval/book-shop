@@ -29,8 +29,10 @@ class OrdersService
             LEFT JOIN
                 cars c ON o.car_id = c.id
             LEFT JOIN
-                users u ON o.user_id = u.id';
+                users u ON o.user_id = u.id
+            WHERE u.id = ?';
         $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(1, $id);
         $stmt->execute();
         $users_array = array();
         $users_array['data'] = array();

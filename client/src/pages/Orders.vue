@@ -27,11 +27,11 @@ export default {
     }
   },
   created () {
-    this.fetchOrders()
+    this.fetchOrders(this.userID)
   },
   methods: {
-    fetchOrders: function () {
-      fetch('http://rest/server/api/orders/')
+    fetchOrders: function (userID) {
+      fetch('http://rest/server/api/orders/?user=' + userID)
         .then(response => {
           if (response.ok) {
             return response.json()
