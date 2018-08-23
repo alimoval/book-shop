@@ -14,6 +14,7 @@
 <script>
 export default {
   name: 'orderDetails',
+  props: ['userID'],
   data () {
     return {
       orders: [],

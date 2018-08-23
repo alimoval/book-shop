@@ -153,7 +153,17 @@ class UsersService
         $this->data = json_decode(file_get_contents("php://input"));
         $this->email = $this->data->email;
         $this->password = $this->data->password;
-
-        return array('message' => 'User ' . $this->email . ' Logging In ' . $this->password);
+        $this->name = $this->data->name;
+        $query = 'INSERT INTO table SET name=:name, email=:email, password=:password';
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':password', $this->password);
+        $stmt->bindParam(':name', $this->name);
+        if ($stmt->execute()) {
+            return array('message' => 'User Registered');
+        } else {
+            return array('message' => 'User Not Created');
+            printf("Error: %s.\n", $stmt->error);
+        }
     }
 }

@@ -24,8 +24,6 @@ class RESTServer
         } elseif ($method == "POST") {
             if ($id === 'login') {
                 $result = $service->login();
-            } elseif ($id === 'register') {
-                $result = $service->register();
             } else {
                 $result = $service->post();    
             }

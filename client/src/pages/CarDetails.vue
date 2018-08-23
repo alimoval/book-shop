@@ -27,6 +27,9 @@
                 <p style='color: tomato;'>
                   Price: <b>${{car.price}}</b>
               </p>
+              <form method="post" v-if="userID"  v-on:submit.stop.prevent='buyCar'>
+                <input type='submit' value='Buy'>
+              </form>
             </div>
         </div>
     </div>
@@ -35,6 +38,7 @@
 <script>
 export default {
   name: 'carDetails',
+  props: ['userID'],
   data () {
     return {
       cars: [],
@@ -45,6 +49,9 @@ export default {
     this.fetchCar(this.$route.params.id)
   },
   methods: {
+    buyCar: function () {
+      console.log(userID);
+    },
     fetchCar: function (id) {
       fetch('http://rest/server/api/cars/' + id)
         .then(response => {

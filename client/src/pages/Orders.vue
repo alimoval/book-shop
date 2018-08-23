@@ -20,6 +20,7 @@
 <script>
 export default {
   name: 'orders',
+  props: ['userID'],
   data: function () {
     return {
       orders: []

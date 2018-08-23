@@ -37,10 +37,11 @@
 <script>
 export default {
   name: 'home',
+  props: ['userID'],
   data: function () {
     return {
       search: '',
-      cars: []
+      cars: [],
     }
   },
   created () {
@@ -54,6 +55,9 @@ export default {
     }
   },
   methods: {
+    checkUser: function () {
+      this.checkUser()
+    },
     fetchCars: function () {
       fetch('http://rest/server/api/cars/')
         .then(response => {
