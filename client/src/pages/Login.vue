@@ -57,7 +57,7 @@ export default {
     },
     proceedForm: function () {
       let data = {email: this.email, password: this.password}
-      this.$http.post('http://rest/server/api/users/login', data)
+      this.$http.post('http://192.168.0.15/~user16/rest/server/api/users/login', data)
         .then(response => {
           localStorage.setItem('user_id', response.body.id)
           this.$emit('setUser', response.body.id)

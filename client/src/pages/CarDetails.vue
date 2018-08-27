@@ -52,7 +52,7 @@ export default {
     buyCar: function () {
       let date = new Date()
       let data = {user_id: this.userID, car_id: this.$route.params.id, date: date.toLocaleString('ru')}
-      this.$http.post('http://rest/server/api/orders/', data)
+      this.$http.post('http://192.168.0.15/~user16/rest/server/api/orders/', data)
         .then(response => {
           this.msg = 'Order Registered'
         })
@@ -62,7 +62,7 @@ export default {
       this.$router.push('/thank-you')
     },
     fetchCar: function (id) {
-      fetch('http://rest/server/api/cars/' + id)
+      fetch('http://192.168.0.15/~user16/rest/server/api/cars/' + id)
         .then(response => {
           if (response.ok) {
             return response.json()

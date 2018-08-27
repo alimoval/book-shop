@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     fetchOrders: function (userID) {
-      fetch('http://rest/server/api/orders/?userID=' + userID)
+      fetch('http://192.168.0.15/~user16/rest/server/api/orders/?userID=' + userID)
         .then(response => {
           if (response.ok) {
             return response.json()
