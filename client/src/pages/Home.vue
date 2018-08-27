@@ -29,7 +29,7 @@
                 <div class='card-body'>
                   <h5 class='card-title' style='color: grey'>{{car.tm}} {{car.model}}</h5>
                   <p class='card-text' style='color: tomato'>
-                      <b>{{car.price}}</b>
+                      <b>${{car.price}}</b>
                   </p>
                 </div>
               </div>
@@ -70,9 +70,10 @@ export default {
   },
   methods: {
     fetchCars: function () {
-      fetch('http://192.168.0.15/~user16/rest/server/api/cars/')
+      fetch('http://192.168.0.15/~user16/rest/client/api/cars/')
         .then(response => {
           if (response.ok) {
+            console.log(response)
             return response.json()
           }
           throw new Error('Network response was not ok')

@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     fetchOrder: function (id) {
-      fetch('http://192.168.0.15/~user16/rest/server/api/orders/' + id)
+      fetch('http://192.168.0.15/~user16/rest/client/api/orders/' + id)
         .then(response => {
           if (response.ok) {
             return response.json()

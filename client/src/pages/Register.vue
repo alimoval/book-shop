@@ -59,7 +59,7 @@ export default {
     },
     proceedForm: function () {
       let data = {email: this.email, password: this.password, name: this.name}
-      this.$http.post('http://192.168.0.15/~user16/rest/server/api/users/', data)
+      this.$http.post('http://192.168.0.15/~user16/rest/client/api/users/', data)
         .then(response => {
           this.msg = 'User Registered'
           console.log(response)
