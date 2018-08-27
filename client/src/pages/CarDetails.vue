@@ -50,12 +50,11 @@ export default {
   },
   methods: {
     buyCar: function () {
-      let date = new Date();
-      let data = {user_id: this.userID, car_id: this.$route.params.id, date: date.toLocaleString("ru")}
+      let date = new Date()
+      let data = {user_id: this.userID, car_id: this.$route.params.id, date: date.toLocaleString('ru')}
       this.$http.post('http://rest/server/api/orders/', data)
         .then(response => {
-          this.msg = "Order Registered"
-          console.log(response)
+          this.msg = 'Order Registered'
         })
         .catch(error => {
           this.message = error

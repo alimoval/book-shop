@@ -61,7 +61,7 @@ export default {
       let data = {email: this.email, password: this.password, name: this.name}
       this.$http.post('http://rest/server/api/users/', data)
         .then(response => {
-          this.msg = "User Registered"
+          this.msg = 'User Registered'
           console.log(response)
         })
         .catch(error => {

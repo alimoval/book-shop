@@ -5,25 +5,24 @@
         <ul class="list-group">
           <li class="list-group-item">
             <div class='input-group mb-3'>
-              <input type='text' class='form-control' placeholder='Brand' v-model='searchBrand' v-on:keyup.prevent='filterByBrand'>
-              <div class='input-group-append'>
-                <button class='btn btn-outline-secondary' type='button' v-on:click='resetFilter'>Reset</button>
-              </div>
+              <input type='text' class='form-control' placeholder='Brand search' v-model='searchBrand' v-on:keyup.prevent='filterByBrand'>
             </div>
           </li>
           <li class="list-group-item">
             <div class='input-group mb-3'>
-              <input type='text' class='form-control' placeholder='Model' v-model='searchModel' v-on:keyup.prevent='filterByModel'>
-              <div class='input-group-append'>
-                <button class='btn btn-outline-secondary' type='button' v-on:click='resetFilter'>Reset</button>
-              </div>
+              <input type='text' class='form-control' placeholder='Model search' v-model='searchModel' v-on:keyup.prevent='filterByModel'>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class='input-group-append'>
+              <button class='btn btn-outline-secondary' type='button' v-on:click='resetFilter'>Reset</button>
             </div>
           </li>
         </ul>
       </div>
       <div class="col-sm-9">
         <div class='row' style='padding-top: 10px'>
-          <div class='col-sm-3' v-for='car in cars' v-bind:key='car.id'>
+          <div class='col-sm-4' v-for='car in cars' v-bind:key='car.id'>
             <router-link :to='`/${car.id}`'>
               <div class='card'>
                 <img class='card-img-top img-fluid' v-bind:src='car.images' alt='Card image cap'>

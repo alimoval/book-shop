@@ -39,7 +39,7 @@ export default {
     this.getUserFromLocalStorage()
   },
   methods: {
-    getUserFromLocalStorage: function() {
+    getUserFromLocalStorage: function () {
       this.userId = localStorage.getItem('user_id')
     },
     setUserID: function (id) {

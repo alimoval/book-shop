@@ -27,7 +27,9 @@ export default {
     }
   },
   created () {
-    this.fetchOrders(this.userID)
+    if (this.userID) {
+      this.fetchOrders(this.userID)
+    }
   },
   methods: {
     fetchOrders: function (userID) {
