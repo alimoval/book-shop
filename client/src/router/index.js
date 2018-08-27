@@ -7,6 +7,7 @@ import Login from '@/pages/Login'
 import Orders from '@/pages/Orders'
 import Register from '@/pages/Register'
 import OrderDetails from '@/pages/OrderDetails'
+import ThankYou from '@/pages/ThankYou'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/thank-you',
+      name: 'Thankyou',
+      component: ThankYou
     },
     {
       path: '/login',

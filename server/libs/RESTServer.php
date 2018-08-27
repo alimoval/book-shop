@@ -9,6 +9,7 @@ class RESTServer
     {
         $this->view = new View();
         $method = $_SERVER['REQUEST_METHOD'];
+        $query = $_SERVER['QUERY_STRING'];
         $url = $_SERVER['REQUEST_URI'];
         $urlArray = explode("/", $url);
         $key = array_search('api', $urlArray);
@@ -16,6 +17,10 @@ class RESTServer
         $id = $urlArray[$key+2];
         list($id, $viewType) = explode(".", $id);
         if ($method == "GET") {
+            // if($id == $query){
+            //     $userId = explode('=', $query);
+            //     echo $userId;
+            // } else
             if ($id > 0) {
                 $result = $service->getOne($id);
             } else {

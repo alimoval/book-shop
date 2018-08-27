@@ -1,34 +1,42 @@
 <template>
   <div class='container'>
     <div class='row'>
-      <div class='col-sm-4 d-flex justify-content-start'>
-        <div class='input-group mb-3'>
-          <input type='text' class='form-control' placeholder='Brand' v-model='search' v-on:keyup.prevent='filterByBrand'>
-          <div class='input-group-append'>
-            <button class='btn btn-outline-secondary' type='button' v-on:click='resetFilter'>Reset</button>
-          </div>
-        </div>
-        <div class='input-group mb-3'>
-          <input type='text' class='form-control' placeholder='Model' v-model='search' v-on:keyup.prevent='filterByBrand'>
-          <div class='input-group-append'>
-            <button class='btn btn-outline-secondary' type='button' v-on:click='resetFilter'>Reset</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class='row' style='padding-top: 20px'>
-      <div class='col-sm-4' v-for='car in cars' v-bind:key='car.id'>
-        <router-link :to='`/${car.id}`'>
-          <div class='card'>
-            <img class='card-img-top img-fluid' v-bind:src='car.images' alt='Card image cap'>
-            <div class='card-body'>
-              <h5 class='card-title' style='color: grey'>{{car.tm}} {{car.model}}</h5>
-              <p class='card-text' style='color: tomato'>
-                  <b>{{car.price}}</b>
-              </p>
+      <div class='col-sm-3 d-flex justify-content-start'>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class='input-group mb-3'>
+              <input type='text' class='form-control' placeholder='Brand' v-model='searchBrand' v-on:keyup.prevent='filterByBrand'>
+              <div class='input-group-append'>
+                <button class='btn btn-outline-secondary' type='button' v-on:click='resetFilter'>Reset</button>
+              </div>
             </div>
+          </li>
+          <li class="list-group-item">
+            <div class='input-group mb-3'>
+              <input type='text' class='form-control' placeholder='Model' v-model='searchModel' v-on:keyup.prevent='filterByModel'>
+              <div class='input-group-append'>
+                <button class='btn btn-outline-secondary' type='button' v-on:click='resetFilter'>Reset</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="col-sm-9">
+        <div class='row' style='padding-top: 10px'>
+          <div class='col-sm-3' v-for='car in cars' v-bind:key='car.id'>
+            <router-link :to='`/${car.id}`'>
+              <div class='card'>
+                <img class='card-img-top img-fluid' v-bind:src='car.images' alt='Card image cap'>
+                <div class='card-body'>
+                  <h5 class='card-title' style='color: grey'>{{car.tm}} {{car.model}}</h5>
+                  <p class='card-text' style='color: tomato'>
+                      <b>{{car.price}}</b>
+                  </p>
+                </div>
+              </div>
+            </router-link>
           </div>
-        </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -40,17 +48,24 @@ export default {
   props: ['userID'],
   data: function () {
     return {
-      search: '',
+      searchBrand: '',
+      searchModel: '',
       cars: [],
+      fullCarsArray: []
     }
   },
   created () {
     this.fetchCars()
   },
   computed: {
-    filteredCars () {
+    filteredByBrandCars () {
       return this.cars.filter(car => {
-        return car.tm.toLowerCase().includes(this.search.toLowerCase())
+        return car.tm.toLowerCase().includes(this.searchBrand.toLowerCase())
+      })
+    },
+    filteredByModelCars () {
+      return this.cars.filter(car => {
+        return car.model.toLowerCase().includes(this.searchModel.toLowerCase())
       })
     }
   },
@@ -80,14 +95,22 @@ export default {
       this.fullCarsArray = this.cars
     },
     filterByBrand: function () {
-      if (this.search !== '') {
-        this.cars = this.filteredCars
+      if (this.searchBrand !== '') {
+        this.cars = this.filteredByBrandCars
+      } else {
+        this.cars = this.fullCarsArray
+      }
+    },
+    filterByModel: function () {
+      if (this.searchModel !== '') {
+        this.cars = this.filteredByModelCars
       } else {
         this.cars = this.fullCarsArray
       }
     },
     resetFilter: function () {
-      this.search = ''
+      this.searchBrand = ''
+      this.searchModel = ''
       this.filterByBrand()
     }
   }

@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     fetchOrders: function (userID) {
-      fetch('http://rest/server/api/orders/?user=' + userID)
+      fetch('http://rest/server/api/orders/?userID=' + userID)
         .then(response => {
           if (response.ok) {
             return response.json()

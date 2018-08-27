@@ -29,6 +29,35 @@ class OrdersService
             LEFT JOIN
                 cars c ON o.car_id = c.id
             LEFT JOIN
+                users u ON o.user_id = u.id';
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute();
+        $users_array = array();
+        $users_array['data'] = array();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $user = array(
+                'id' => $id,
+                'model' => $car_model,
+                'name' => $user_name,
+                'date' => $date,
+            );
+            array_push($users_array['data'], $user);
+        }
+        return $users_array;
+    }
+
+    public function getAllFiltered($userID)
+    {
+        $query = 'SELECT 
+                o.id,
+                o.date,
+                c.model as car_model,
+                u.name as user_name
+            FROM ' . $this->table . ' o
+            LEFT JOIN
+                cars c ON o.car_id = c.id
+            LEFT JOIN
                 users u ON o.user_id = u.id
             WHERE u.id = ?';
         $stmt = $this->connection->prepare($query);
@@ -55,6 +84,7 @@ class OrdersService
                 o.id,
                 o.date,
                 c.model as car_model,
+                c.price as car_price,
                 u.name as user_name
             FROM ' . $this->table . ' o
             LEFT JOIN
@@ -73,6 +103,7 @@ class OrdersService
                 'id' => $id,
                 'model' => $car_model,
                 'name' => $user_name,
+                'price' => $car_price,
                 'date' => $date,
             );
             array_push($orders_array['data'], $order);

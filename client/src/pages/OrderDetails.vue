@@ -6,6 +6,7 @@
             <div class='col-sm-8' style='text-align:left;'>
               <h4 style='color: grey;'>{{order.name}} bought {{order.car}}</h4>
               <p>date: <b>{{order.date}}</b></p>
+              <p>price: <b>${{order.price}}</b></p>
             </div>
         </div>
     </div>
@@ -39,7 +40,8 @@ export default {
               id: item.id,
               car: item.model,
               name: item.name,
-              date: item.date
+              date: item.date,
+              price: item.price
             })
           })
         })
