@@ -36,7 +36,6 @@ export default {
     }
   },
   created () {
-    this.$router.push('/')
     this.getUserFromLocalStorage()
   },
   methods: {
