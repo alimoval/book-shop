@@ -73,7 +73,6 @@ export default {
       fetch('http://192.168.0.15/~user16/rest/client/api/cars/')
         .then(response => {
           if (response.ok) {
-            console.log(response)
             return response.json()
           }
           throw new Error('Network response was not ok')
