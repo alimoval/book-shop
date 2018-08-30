@@ -12,7 +12,8 @@ import ThankYou from '@/pages/ThankYou'
 Vue.use(Router)
 
 export default new Router({
-  base: '/~user16/rest/client/dist/',
+  base: '/~user16/rest/client/dist',
+  mode: 'history',
   routes: [
     {
       path: '/',
