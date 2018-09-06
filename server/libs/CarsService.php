@@ -1,5 +1,4 @@
 <?php
-require_once 'SQL.php';
 
 class CarsService
 {

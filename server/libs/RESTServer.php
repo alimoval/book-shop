@@ -1,5 +1,5 @@
 <?php
-require_once 'View.php';
+include ('autoload.php');
 
 class RESTServer
 {
