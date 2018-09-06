@@ -3,6 +3,7 @@
 class BooksService
 {
     private $db;
+    private $queryFilters;
     private $mailer;
     private $table = 'books';
 
@@ -10,16 +11,33 @@ class BooksService
     {
         $db = new SQL();
         $this->connection = $db->connect();
+        $this->queryFilters = new QueryFilters();
     }
 
     public function getAll()
     {
-        $query = 'SELECT books.id as id, books.name as name, books.price as price, books.description as description, genres.name as genre, authors.name as author 
-                    FROM ' .$this->table. ' as books '. 
-                    'LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
+        $query = 'SELECT books.id as id, books.name as name, books.price as price, books.description as description, genres.name as genre, authors.name as author
+                    FROM ' . $this->table . ' as books ' .
+            'LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
                     LEFT JOIN authors ON authors.id=book_author_relation.author_id
                     LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
                     LEFT JOIN genres ON genres.id=book_genre_relation.genre_id';
+        $whereClause = [];
+        $params = [];
+        // conditions whether authors or genres selected
+        if ($this->queryFilters->hasFilter('authors')) {
+            $inClause = str_repeat('?,', count($this->queryFilters->getAuthors()) - 1) . '?';
+            $whereClause[] = "book_author_relation.author_id IN($inClause)";
+            $params = $this->queryFilters->getAuthors();
+        }
+        if ($this->queryFilters->hasFilter('genres')) {
+            $inClause = str_repeat('?,', count($this->queryFilters->getGenres()) - 1) . '?';
+            $whereClause[] = "book_genre_relation.genre_id IN($inClause)";
+            $params = array_merge($params, $this->queryFilters->getGenres());
+        }
+        if ($whereClause) {
+            $query .= " WHERE " . implode('AND ', $whereClause);
+        }
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $books_array = array();
@@ -32,53 +50,20 @@ class BooksService
                 'description' => $description,
                 'price' => $price,
                 'genre' => $genre,
-                'author' => $author
+                'author' => $author,
             );
             array_push($books_array['data'], $book);
         }
-        return $books_array;
+        $collection = Collection::fromRawData($books_array, Book::class);
+
+        return $collection;
     }
-
-    //public function getBookCollection(QueryFilters $queryFilters)
-    // {
-    //     // base query
-    //     $sql = "SELECT books.id, books.name, books.price, books.description, genres.name as genre, authors.name as author FROM books 
-    //             LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
-    //             LEFT JOIN authors ON authors.id=book_author_relation.author_id
-    //             LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
-    //             LEFT JOIN genres ON genres.id=book_genre_relation.genre_id";
-
-    //     $whereClause = [];
-    //     $params      = [];
-    //     // conditions whether authors or genres selected
-    //     if ($queryFilters->hasFilter('authors')) {
-    //         $inClause      = str_repeat('?,', count($queryFilters->getAuthors()) - 1) . '?';
-    //         $whereClause[] = "book_author_relation.author_id IN($inClause)";
-    //         $params        = $queryFilters->getAuthors();
-    //     }
-
-    //     if ($queryFilters->hasFilter('genres')) {
-    //         $inClause      = str_repeat('?,', count($queryFilters->getGenres()) - 1) . '?';
-    //         $whereClause[] = "book_genre_relation.genre_id IN($inClause)";
-    //         $params = array_merge($params, $queryFilters->getGenres());
-    //     }
-
-    //     if ($whereClause) {
-    //         $sql .= " WHERE " . implode('AND ', $whereClause);
-    //     }
-
-    //     $rows = $this->db->fetchAll($sql, $params);
-
-    //     $collection = Collection::fromRawData($rows, Book::class);
-
-    //     return $collection;
-    // }
 
     public function getOne($id)
     {
-        $query = 'SELECT books.id as id, books.name as name, books.price as price, books.description as description, genres.name as genre, authors.name as author 
-                    FROM ' .$this->table. ' as books '. 
-                    'LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
+        $query = 'SELECT books.id as id, books.name as name, books.price as price, books.description as description, genres.name as genre, authors.name as author
+                    FROM ' . $this->table . ' as books ' .
+            'LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
                     LEFT JOIN authors ON authors.id=book_author_relation.author_id
                     LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
                     LEFT JOIN genres ON genres.id=book_genre_relation.genre_id WHERE books.id = ?';
@@ -95,7 +80,7 @@ class BooksService
                 'description' => $description,
                 'price' => $price,
                 'genre' => $genre,
-                'author' => $author
+                'author' => $author,
             );
             array_push($books_array['data'], $book);
         }
@@ -106,7 +91,7 @@ class BooksService
     {
         header('Access-Control-Allow-Methods: POST');
         header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
-        print_r($this->data = json_decode(file_get_contents("php://input"))); 
+        print_r($this->data = json_decode(file_get_contents("php://input")));
         $this->name = $this->data->name;
         $this->description = $this->data->description;
         $this->price = $this->data->price;
@@ -170,7 +155,7 @@ class BooksService
     // public function getBookCollection(QueryFilters $queryFilters)
     // {
     //     // base query
-    //     $sql = "SELECT books.id, books.name, books.price, books.description, genres.name as genre, authors.name as author FROM books 
+    //     $sql = "SELECT books.id, books.name, books.price, books.description, genres.name as genre, authors.name as author FROM books
     //             LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
     //             LEFT JOIN authors ON authors.id=book_author_relation.author_id
     //             LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
@@ -204,7 +189,7 @@ class BooksService
 
     // public function getBook($id)
     // {
-    //     $sql = "SELECT books.id, books.name, books.price, books.description, genres.name as genre, authors.name as author FROM books 
+    //     $sql = "SELECT books.id, books.name, books.price, books.description, genres.name as genre, authors.name as author FROM books
     //             LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
     //             LEFT JOIN authors ON authors.id=book_author_relation.author_id
     //             LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
