@@ -6,6 +6,11 @@ class BooksService
     private $queryFilters;
     private $mailer;
     private $table = 'books';
+    private $name;
+    private $description;
+    private $price;
+    private $authors = [];
+    private $genres = [];
 
     public function __construct()
     {
@@ -63,7 +68,7 @@ class BooksService
     {
         $query = 'SELECT books.id as id, books.name as name, books.price as price, books.description as description, genres.name as genre, authors.name as author
                     FROM ' . $this->table . ' as books ' .
-            'LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
+                    'LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
                     LEFT JOIN authors ON authors.id=book_author_relation.author_id
                     LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
                     LEFT JOIN genres ON genres.id=book_genre_relation.genre_id WHERE books.id = ?';
@@ -93,71 +98,29 @@ class BooksService
     {
         header('Access-Control-Allow-Methods: POST');
         header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
-        print_r($this->data = json_decode(file_get_contents("php://input")));
+        $this->data = json_decode(file_get_contents("php://input"));
         $this->name = $this->data->name;
         $this->description = $this->data->description;
         $this->price = $this->data->price;
+        $this->authors = $this->data->authors;
+        $this->genres = $this->data->genres;
         $query = 'INSERT INTO ' . $this->table . '
-        SET name = :name,
-            description = :description,
-            price = :price';
+                SET name = :name,
+                description = :description,
+                price = :price';
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':name', htmlspecialchars(strip_tags($this->name)));
         $stmt->bindParam(':description', htmlspecialchars(strip_tags($this->description)));
         $stmt->bindParam(':price', htmlspecialchars(strip_tags($this->price)));
         if ($stmt->execute()) {
-            $id =  $this->insertRelations();
-            return array('message' => 'Book ' . $id . ' Created');
+            $this->bookId = $this->connection->lastInsertId();
+            $this->insertRelations();
+            return array('message' => 'Book ' . $this->bookId . ' Created');
         } else {
             return array('message' => 'Book Not Created');
             printf("Error: %s.\n", $stmt->error);
         }
     }
-
-    public function insertRelations(Book $book)
-    {
-        if (!empty($book->getAuthors())) {
-            // delete all book_author relations
-            $this->db->delete('book_author_relation', ['book_id' => $bookId]);
-            // add new ones
-            foreach ($book->getAuthors() as $authorId) {
-                $this->db->insert('book_author_relation', ['book_id' => $bookId, 'author_id' => $authorId]);
-            }
-        }
-
-        // handle genres
-        if (!empty($book->getGenres())) {
-            // delete all book_author relations
-            $this->db->delete('book_genre_relation', ['book_id' => $bookId]);
-            // add new ones
-            foreach ($book->getGenres() as $genreId) {
-                $this->db->insert('book_genre_relation', ['book_id' => $bookId, 'genre_id' => $genreId]);
-            }
-        }
-
-        return $bookId;
-    }
-
-
-
-    // public function insert()
-    // {
-        // $params = [
-            //         'name'        => $book->getName(),
-            //         'description' => $book->getDescription(),
-            //         'price'       => $book->getPrice(),
-            //     ];
-    //     $query = sprintf("INSERT INTO %s ", $table);
-
-    //     $placeholders = str_repeat('?,', count($params) - 1) . '?';
-    //     $query        .= sprintf("(%s) ", implode(', ', array_keys($params)));
-    //     $query        .= sprintf("VALUES (%s)", $placeholders);
-
-    //     $stmt = $this->connection->prepare($query);
-    //     $stmt->execute(array_values($params));
-
-    //     return (int) $this->connection->lastInsertId();
-    // }
 
     public function update($id)
     {
@@ -167,45 +130,27 @@ class BooksService
         $this->name = $this->data->name;
         $this->description = $this->data->description;
         $this->price = $this->data->price;
+        $this->authors = $this->data->authors;
+        $this->genres = $this->data->genres;
         $query = 'UPDATE ' . $this->table . '
-        SET name = :name,
-            description = :description,
-            price = :price,
-            WHERE id = :id';
+                SET name = :name,
+                description = :description,
+                price = :price
+                WHERE id = :id';
         $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':name', htmlspecialchars(strip_tags($this->model)));
+        $stmt->bindParam(':name', htmlspecialchars(strip_tags($this->name)));
         $stmt->bindParam(':description', htmlspecialchars(strip_tags($this->description)));
         $stmt->bindParam(':price', htmlspecialchars(strip_tags($this->price)));
         $stmt->bindParam(':id', htmlspecialchars(strip_tags($id)));
+        $this->bookId = $id;
         if ($stmt->execute()) {
-            return array('message' => 'Book Updated');
+            $this->insertRelations();
+            return array('message' => 'Book ' . $this->bookId . ' Updated');
         } else {
-            return array('message' => 'Book Not Updated');
+            return array('message' => 'Book ' . $this->bookId . ' Not Updated');
             printf("Error: %s.\n", $stmt->error);
         }
     }
-
-
-    // public function update(string $table, int $id, array $params)
-    // {
-    //     $placeholders = array_map(
-    //         function ($field) {
-    //             return "$field=?";
-    //         },
-    //         array_keys($params)
-    //     );
-
-    //     $assignmentList = implode(', ', $placeholders);
-
-    //     $query          = sprintf("UPDATE %s SET %s WHERE id=? LIMIT 1", $table, $assignmentList);
-    //     $queryParams    = array_values($params);
-    //     $queryParams [] = $id;
-
-    //     $stmt = $this->connection->prepare($query);
-    //     $stmt->execute($queryParams);
-
-    //     return $id;
-    // }
 
     public function delete($id)
     {
@@ -222,20 +167,90 @@ class BooksService
         }
     }
 
-    
+    public function insertRelations()
+    {
+        // handle authors
+        if (!empty($this->authors)) {
+            $this->deleteBookAuthorRelation($this->bookId);
+            foreach ($this->authors as $authorId) {
+                $this->insertBookAuthorRelation($authorId);
+            }
+        }
+        // handle genres
+        if (!empty($this->genres)) {
+            $this->deleteBookGenreRelation($this->bookId);
+            foreach ($this->genres as $genreId) {
+                $this->insertBookGenreRelation($genreId);
+            }
+        }
+    }
 
-    // public function delete($id)
-    // {
-    //     $result = $this->db->delete('books', ['id' => $id]);
+    public function deleteBookAuthorRelation($id)
+    {
+        header('Access-Control-Allow-Methods: DELETE');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
+        $query = 'DELETE FROM book_author_relation WHERE book_id = ?';
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(1, $id);
+        if ($stmt->execute()) {
+            return array('message' => 'Book Author Relation Deleted');
+        } else {
+            return array('message' => 'Book Author Relation Not Deleted');
+            printf("Error: %s.\n", $stmt->error);
+        }
+    }
 
-    //     return $result;
-    // }
+    public function deleteBookGenreRelation($id)
+    {
+        header('Access-Control-Allow-Methods: DELETE');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
+        $query = 'DELETE FROM book_genre_relation WHERE book_id = ?';
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(1, $id);
+        if ($stmt->execute()) {
+            return array('message' => 'Book Genre Relation Deleted');
+        } else {
+            return array('message' => 'Book Genre Relation Not Deleted');
+            printf("Error: %s.\n", $stmt->error);
+        }
+    }
 
-    // /**
-    //  * @param BookOrder $order
-    //  *
-    //  * @return mixed
-    //  */
+    public function insertBookAuthorRelation($authorId)
+    {
+        header('Access-Control-Allow-Methods: POST');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
+        $query = 'INSERT INTO book_author_relation
+                SET book_id = :bookId,
+                author_id = :authorId';
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':bookId', htmlspecialchars(strip_tags($this->bookId)));
+        $stmt->bindParam(':authorId', htmlspecialchars(strip_tags($authorId)));
+        if ($stmt->execute()) {
+            return array('message' => 'Book - Author Relation Created');
+        } else {
+            return array('message' => 'Book - Author Relation Not Created');
+            printf("Error: %s.\n", $stmt->error);
+        }
+    }
+
+    public function insertBookGenreRelation($genreId)
+    {
+        header('Access-Control-Allow-Methods: POST');
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
+        $query = 'INSERT INTO book_genre_relation
+                SET book_id = :bookId,
+                genre_id = :genreId';
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':bookId', htmlspecialchars(strip_tags($this->bookId)));
+        $stmt->bindParam(':genreId', htmlspecialchars(strip_tags($genreId)));
+        if ($stmt->execute()) {
+            return array('message' => 'Book - Genre Relation Created');
+        } else {
+            return array('message' => 'Book - Genre Relation Not Created');
+            printf("Error: %s.\n", $stmt->error);
+        }
+    }    
+
     // public function sendOrder(BookOrder $order)
     // {
     //     $details = $this->getBook($order->getId());

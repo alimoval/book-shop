@@ -21,11 +21,6 @@ class CarsService
     {
         $db = new SQL();
         $this->connection = $db->connect();
-        
-        // if($_SERVER['PHP_AUTH_USER'] !== 'admin' && $_SERVER['PHP_AUTH_PW'] !== 'admin'){
-        //     header("WWW-Authenticate: Basic realm=\"thetutlarge\"");
-        //     header("HTTP\ 1.0 401 Unauthorized");
-        // }
     }
 
     public function getAll()

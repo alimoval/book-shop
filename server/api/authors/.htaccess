@@ -1,0 +1,24 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # RewriteBase /book-shop/server/api/authors
+    # If the requested filename exists, simply serve it.
+    # We only want to let Apache serve files and not directories.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule .? - [L]
+
+    # Rewrite all other queries to the controller.
+    RewriteRule .? index.php [L]
+</IfModule>
+
+# <Limit GET POST PUT DELETE>
+#     Allow from all
+# </Limit>
+
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On 
+#     RewriteBase /~user16/book-shop/server/api/authors/ 
+#     RewriteCond %{REQUEST_FILENAME} !-f 
+#     RewriteCond %{REQUEST_FILENAME} !-d 
+#     RewriteRule ^.*$ index.php 
+# </IfModule>
