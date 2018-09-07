@@ -3,26 +3,26 @@
 class Collection implements \JsonSerializable
 {
 
-    private $items = [];
+    private $data = [];
 
     public function getItems(): array
     {
-        return $this->items;
+        return $this->data;
     }
 
     public function hasItem($index)
     {
-        return isset($this->items[$index]);
+        return isset($this->data[$index]);
     }
 
     public function getItem($index)
     {
-        return $this->items[$index];
+        return $this->data[$index];
     }
 
     public function setItem($index, $item)
     {
-        $this->items[$index] = $item;
+        $this->data[$index] = $item;
 
         return $this;
     }
@@ -30,17 +30,14 @@ class Collection implements \JsonSerializable
     public static function fromRawData(array $data, $model)
     {
         $collection = new self();
-
-        foreach ($data as $entry) {
+        foreach ($data['data'] as $entry) {
             $id = (int) $entry['id'];
-
             if (!$collection->hasItem($id)) {
                 $item = $model::fromArray($entry);
                 $collection->setItem($id, $item);
             } else {
                 $item = $collection->getItem($id);
                 $item->addRelations($entry);
-
                 $collection->setItem($id, $item);
             }
         }
