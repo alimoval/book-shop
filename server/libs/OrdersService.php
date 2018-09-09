@@ -1,5 +1,4 @@
 <?php
-require_once 'SQL.php';
 
 class OrdersService
 {
@@ -7,15 +6,15 @@ class OrdersService
     public $table = 'orders';
     public $data;
     public $id;
-    public $car_id;
+    public $book_id;
     public $user_id;
     public $date;
+    public $price;
 
     public function __construct()
     {
         $db = new SQL();
         $this->connection = $db->connect();
-        // Check is User authorized
     }
 
     public function getAll()
@@ -23,11 +22,11 @@ class OrdersService
         $query = 'SELECT 
                 o.id,
                 o.date,
-                c.model as car_model,
+                b.name as book_name,
                 u.name as user_name
             FROM ' . $this->table . ' o
             LEFT JOIN
-                cars c ON o.car_id = c.id
+                books b ON o.book_id = b.id
             LEFT JOIN
                 users u ON o.user_id = u.id';
         $stmt = $this->connection->prepare($query);
@@ -38,8 +37,8 @@ class OrdersService
             extract($row);
             $user = array(
                 'id' => $id,
-                'model' => $car_model,
-                'name' => $user_name,
+                'book_name' => $book_name,
+                'user_name' => $user_name,
                 'date' => $date,
             );
             array_push($users_array['data'], $user);
@@ -83,12 +82,12 @@ class OrdersService
         $query = 'SELECT 
                 o.id,
                 o.date,
-                c.model as car_model,
-                c.price as car_price,
+                b.name as book_name,
+                b.price as book_price,
                 u.name as user_name
             FROM ' . $this->table . ' o
             LEFT JOIN
-                cars c ON o.car_id = c.id
+                books b ON o.book_id = b.id
             LEFT JOIN
                 users u ON o.user_id = u.id
             WHERE o.id = ?';
@@ -101,9 +100,9 @@ class OrdersService
             extract($row);
             $order = array(
                 'id' => $id,
-                'model' => $car_model,
-                'name' => $user_name,
-                'price' => $car_price,
+                'book_name' => $book_name,
+                'user_name' => $user_name,
+                'price' => $book_price,
                 'date' => $date,
             );
             array_push($orders_array['data'], $order);
@@ -117,13 +116,19 @@ class OrdersService
         header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
         $this->data = json_decode(file_get_contents("php://input"));
         $this->date = $this->data->date;
-        $this->car_id = $this->data->car_id;
+        $this->book_id = $this->data->book_id;
         $this->user_id = $this->data->user_id;
-        $query = "INSERT INTO " . $this->table . " SET date = :date, car_id = :car_id, user_id = :user_id";
+        $this->price = $this->data->price;
+        $query = "INSERT INTO " . $this->table . " 
+                SET date = :date, 
+                book_id = :book_id, 
+                user_id = :user_id,
+                price = :price";
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':date', htmlspecialchars(strip_tags($this->date)));
-        $stmt->bindParam(':car_id', htmlspecialchars(strip_tags($this->car_id)));
+        $stmt->bindParam(':book_id', htmlspecialchars(strip_tags($this->book_id)));
         $stmt->bindParam(':user_id', htmlspecialchars(strip_tags($this->user_id)));
+        $stmt->bindParam(':price', htmlspecialchars(strip_tags($this->price)));
         if ($stmt->execute()) {
             return array('message' => 'Order Created');
         } else {
@@ -138,18 +143,21 @@ class OrdersService
         header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Control-Allow-Methods, Content-Type, Authorization, X-Requested-With');
         $this->data = json_decode(file_get_contents("php://input"));
         $this->date = $this->data->date;
-        $this->car_id = $this->data->car_id;
+        $this->book_id = $this->data->book_id;
         $this->user_id = $this->data->user_id;
+        $this->price = $this->data->price;
         $query = 'UPDATE ' . $this->table . '
             SET date = :date,
-                car_id = :car_id,
-                user_id = :user_id
+                book_id = :book_id,
+                user_id = :user_id,
+                price = :price,
                 WHERE id = :id';
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':id', htmlspecialchars(strip_tags($id)));
         $stmt->bindParam(':date', htmlspecialchars(strip_tags($this->date)));
-        $stmt->bindParam(':car_id', htmlspecialchars(strip_tags($this->car_id)));
+        $stmt->bindParam(':book_id', htmlspecialchars(strip_tags($this->book_id)));
         $stmt->bindParam(':user_id', htmlspecialchars(strip_tags($this->user_id)));
+        $stmt->bindParam(':price', htmlspecialchars(strip_tags($this->price)));
         if ($stmt->execute()) {
             return array('message' => 'Order Updated');
         } else {

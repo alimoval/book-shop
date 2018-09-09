@@ -5,7 +5,7 @@
                 <router-link :to='`/orders/${order.id}`'>
                     <div class='card'>
                         <div class='card-body'>
-                            <h5 class='card-title' style='color: grey'>{{order.name}} {{order.car}}</h5>
+                            <h5 class='card-title' style='color: grey'>{{order.name}} {{order.book}}</h5>
                             <p class='card-text' style='color: tomato'>
                                 <b>{{order.date}}</b>
                             </p>
@@ -33,7 +33,9 @@ export default {
   },
   methods: {
     fetchOrders: function (userID) {
-      fetch('http://192.168.0.15/~user16/rest/client/api/orders/?userID=' + userID)
+      fetch('http://book-shop/server/api/orders/')
+      // fetch('http://book-shop/server/api/orders/?userID=' + userID)
+      // fetch('http://192.168.0.15/~user16/rest/client/api/orders/?userID=' + userID)
         .then(response => {
           if (response.ok) {
             return response.json()
@@ -44,8 +46,8 @@ export default {
           json['data'].forEach(item => {
             this.orders.push({
               id: item.id,
-              model: item.model,
-              name: item.name,
+              book: item.book_name,
+              name: item.user_name,
               date: item.date
             })
           })

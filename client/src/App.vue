@@ -2,7 +2,7 @@
   <div id='app'>
     <nav class='navbar navbar-light bg-dark' style='font-weight: 400;'>
       <div class='container'>
-        <router-link to='/' class='nav-link'>CARS SHOP</router-link>
+        <router-link to='/' class='nav-link'>BOOKS SHOP</router-link>
         <router-link to='/orders' class='nav-link' v-if='userId'>Orders</router-link>
 			  <ul class='nav justify-content-end'>
 				  <li class='nav-item' v-if='!userId'>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import Nav from './components/Nav'
 export default {
   name: 'App',
   data: function () {
@@ -34,6 +35,9 @@ export default {
       userId: null,
       msg: null
     }
+  },
+  components:{
+    Nav
   },
   created () {
     this.getUserFromLocalStorage()

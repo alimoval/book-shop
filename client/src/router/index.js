@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Home from '@/pages/Home'
-import CarDetails from '@/pages/CarDetails'
+import BookDetails from '@/pages/BookDetails'
 import Login from '@/pages/Login'
 import Orders from '@/pages/Orders'
 import Register from '@/pages/Register'
@@ -12,7 +12,7 @@ import ThankYou from '@/pages/ThankYou'
 Vue.use(Router)
 
 export default new Router({
-  base: '/~user16/rest/client/dist',
+  // base: '/~user16/book-shop/client/dist',
   mode: 'history',
   routes: [
     {
@@ -47,8 +47,8 @@ export default new Router({
     },
     {
       path: '/:id',
-      name: 'CarDetails',
-      component: CarDetails
+      name: 'BookDetails',
+      component: BookDetails
     }
   ]
 })
