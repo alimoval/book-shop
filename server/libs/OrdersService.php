@@ -51,11 +51,11 @@ class OrdersService
         $query = 'SELECT 
                 o.id,
                 o.date,
-                c.model as car_model,
+                b.name as book_name,
                 u.name as user_name
             FROM ' . $this->table . ' o 
             LEFT JOIN
-                cars c ON o.car_id = c.id
+                books b ON o.book_id = b.id
             LEFT JOIN
                 users u ON o.user_id = u.id 
             WHERE u.id = ?';
@@ -68,8 +68,8 @@ class OrdersService
             extract($row);
             $user = array(
                 'id' => $id,
-                'model' => $car_model,
-                'name' => $user_name,
+                'book_name' => $book_name,
+                'user_name' => $user_name,
                 'date' => $date,
             );
             array_push($users_array['data'], $user);

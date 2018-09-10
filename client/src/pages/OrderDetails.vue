@@ -1,9 +1,9 @@
 <template>
   <div class='container'>
         <div class='row top-buffer' v-for='order in orders' v-bind:key='order.id'>
-            <div class='col-sm-4'>
+            <div class='col-sm-3'>
             </div>
-            <div class='col-sm-8' style='text-align:left;'>
+            <div class='col-sm-9' style='text-align:left;'>
               <h4 style='color: grey;'>{{order.name}} bought {{order.book}}</h4>
               <p>date: <b>{{order.date}}</b></p>
               <p>price: <b>${{order.price}}</b></p>
@@ -36,7 +36,6 @@ export default {
           throw new Error('Network response was not ok')
         })
         .then(json => {
-          console.log(json)
           json['data'].forEach(item => {
             this.orders.push({
               id: item.id,

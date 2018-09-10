@@ -1,30 +1,30 @@
 <template>
   <div class='container'>
         <div class='row top-buffer' v-for='book in books' v-bind:key='book.id'>
-            <div class='col-sm-4'>
+            <div class='col-sm-3'>
               <!-- <img class='img-fluid' v-bind:src='book.images' alt='Card image cap'> -->
             </div>
-            <div class='col-sm-8' style='text-align:left;'>
-              <h4 style='color: grey;'>{{book.name}}</h4>
+            <div class='col-sm-9' style='text-align:left;'>
+              <h3 style="font-weight:bold">{{book.name}}</h3>
               <p>
-                    authors: 
+                    Authors: 
                     <span v-for='author in bookAuthors' v-bind:key='author.id'>{{author}}, </span>
                 </p>
                 <p>
-                    genres:
+                    Genres:
                     <span v-for='genre in bookGenres' v-bind:key='genre.id'>{{genre}}, </span>
                 </p>
               <p>
-                    description: {{book.description}}
+                    Description: {{book.description}}
                 </p>
               <p>
-                    discount: {{book.discount}}
+                    Discount: {{book.discount || 0}} %
                 </p>
                 <p style='color: tomato;'>
                   Price: <b>${{book.price}}</b>
               </p>
               <form method='post' v-if='userID'  v-on:submit.stop.prevent='buyBook'>
-                <input type='submit' value='Buy'>
+                <input type='submit' value='Add to Cart'>
               </form>
             </div>
         </div>

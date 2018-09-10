@@ -6,46 +6,36 @@
           <li class='list-group-item'>
             <p>Authors</p>
             <div class='form-check' v-for='author in authors' v-bind:key='author.id'>
-              <input class='form-check-input' type='checkbox' value='author.id' id='author.id' @click='filterByAuthor'>
-              <label class='form-check-label' for='author.id'>
-                {{author.id}}{{author.name}}
+              <input class='form-check-input' type='checkbox' value='author.id' @click='filterByAuthor'>
+              <label class='form-check-label'>
+                {{author.name}}
               </label>
             </div>
           </li>
           <li class='list-group-item'>
             <p>Genres</p>
             <div class='form-check' v-for='genre in genres' v-bind:key='genre.id'>
-              <input class='form-check-input' type='checkbox' value='genre.name' id='genre.name'>
-              <label class='form-check-label' for='genre.name'>
+              <input class='form-check-input' type='checkbox' value='genre.name'>
+              <label class='form-check-label'>
                 {{genre.name}}
               </label>
             </div>
           </li>
-          <!-- <li class='list-group-item'>
-            <div class='input-group mb-3'>
-              <input type='text' class='form-control' placeholder='Model search' v-model='searchModel' v-on:keyup.prevent='filterByModel'>
-            </div>
-          </li>
-          <li class='list-group-item'>
-            <div class='input-group-append'>
-              <button class='btn btn-outline-secondary' type='button' v-on:click='resetFilter'>Reset</button>
-            </div>
-          </li> -->
         </ul>
       </div>
       <div class='col-sm-9'>
-        <div class='row' style='padding-top: 10px'>
-          <div class='col-sm-4' v-for='book in books' v-bind:key='book.id'>
-            <router-link :to='`/${book.id}`'>
-              <div class='card'>
+        <div class='row'>
+          <div class='col-sm-4' v-for='book in books' v-bind:key='book.id'  style='padding-bottom: 20px'>
+            <router-link :to='`/${book.id}`' onmouseover='this.style="text-decoration: none;"'>
+              <div class='card' style='min-height: 200px'>
                 <!-- <img class='card-img-top img-fluid' v-bind:src='author.images' alt='Card image cap'> -->
                 <div class='card-body'>
-                  <h5 class='card-title' style='color: grey'>{{book.name}}</h5>
-                  <p class='card-text'>
-                      <b>{{book.description}}</b>
+                  <h5 class='card-title' style='color: #007bff'>{{book.name}}</h5>
+                  <p v-for='author in book.authors' v-bind:key='author.id' style="color:black; font-size:14px; line-height:0.9em">
+                    {{author}}
                   </p>
-                  <p class='card-text' style='color: tomato'>
-                      <b>${{book.price}}</b>
+                  <p class='card-text bottom' style='color: tomato'>
+                    <b>${{book.price}}</b>
                   </p>
                 </div>
               </div>
