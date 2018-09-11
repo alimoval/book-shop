@@ -174,7 +174,14 @@ export default {
         if (i === 0) {
           query += item
         } else {
-          query += '&authors[]=' + item
+          if (query.indexOf(item)) {
+            console.log(query)
+            query = query.replace('authors[]=','')
+            query = query.replace(item,'')
+            console.log(query)
+          } else {
+            query += '&authors[]=' + item
+          }
         }
       })
       fetch('http://book-shop/server/api/books/' + query)
