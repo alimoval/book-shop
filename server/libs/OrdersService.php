@@ -46,8 +46,9 @@ class OrdersService
         return $users_array;
     }
 
-    public function getAllFiltered($userID)
+    public function getAllFiltered($arg)
     {
+        list($param, $value) = explode("=", $arg);
         $query = 'SELECT 
                 o.id,
                 o.date,
@@ -60,7 +61,7 @@ class OrdersService
                 users u ON o.user_id = u.id 
             WHERE u.id = ?';
         $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(1, $userID);
+        $stmt->bindParam(1, $value);
         $stmt->execute();
         $users_array = array();
         $users_array['data'] = array();

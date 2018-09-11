@@ -1,9 +1,9 @@
 <template>
   <div class='container'>
     <div class='row'>
-      <div class='col-md-3 d-flex justify-content-start'>
+      <div class='col-12 col-md-3 justify-content-start'>
         <div class="row">
-          <div class="col col-sm-6 col-md-12 col-lg-12 col-xl-12" style='text-align:left; margin-bottom: 30px'>
+          <div class="col-6 col-md-12" style='text-align:left; margin-bottom: 30px'>
             <p>Authors</p>
             <div class='form-check' v-for='author in authors' v-bind:key='author.id'>
               <input class='form-check-input' type='checkbox' v-bind:value='author.id' @click='filterByAuthor'>
@@ -12,7 +12,7 @@
               </label>
             </div>
           </div>
-          <div class=" col col-sm-6 col-md-12 col-lg-12 col-xl-12" style='text-align:left; margin-bottom: 30px'>
+          <div class=" col-6 col-md-12" style='text-align:left; margin-bottom: 30px'>
             <p>Genres</p>
             <div class='form-check' v-for='genre in genres' v-bind:key='genre.id'>
               <input class='form-check-input' type='checkbox' v-bind:value='genre.id'>
@@ -23,18 +23,18 @@
           </div>
         </div>
       </div>
-      <div class='col col-md-9'>
+      <div class='col-12 col-md-9'>
         <div class='row'>
-          <div class='col-6 col-sm-4 col-xl-3' v-for='book in books' v-bind:key='book.id'  style='padding-bottom: 20px'>
+          <div class='col-12 col-sm-6 col-md-4 col-lg-3' v-for='book in books' v-bind:key='book.id'  style='padding-bottom: 20px;'>
             <router-link :to='`/${book.id}`' onmouseover='this.style="text-decoration: none;"'>
-              <div class='card' style='min-height: 200px; background: url("http://softcatalog.info/sites/default/files/styles/program_logo/public/program/logo/ice_book_reader_professional_.png") no-repeat; padding-top: 10px;'>
-                <!-- <img class='card-img-top img-fluid' v-bind:src='author.images' alt='Card image cap'> -->
-                <div class='card-body'>
-                  <h5 class='card-title' style='color: #007bff'>{{book.name}}</h5>
-                  <p v-for='author in book.authors' v-bind:key='author.id' style="color:black; font-size:14px; line-height:0.9em">
+              <div class='card' style='min-height: 300px;'>
+                <img class='card-img-top img-fluid' src='http://softcatalog.info/sites/default/files/styles/program_logo/public/program/logo/ice_book_reader_professional_.png' alt='Book image' style='max-height:200px'>
+                <div class='card-body' style='padding: 5px;'>
+                  <h6 class='card-title' style='color: #007bff'>{{book.name}}</h6>
+                  <div v-for='author in book.authors' v-bind:key='author.id' style="color:black; font-size:14px; line-height:1em">
                     {{author}}
-                  </p>
-                  <p class='card-text bottom' style='color:tomato;'>
+                  </div>
+                  <p class='card-text bottom' style='color:tomato; position: absolute; bottom: 5px; left: 43%'>
                     <b>${{book.price}}</b>
                   </p>
                 </div>
@@ -90,7 +90,7 @@ export default {
         .then(json => {
           let data = json['data']
           let authors = []
-          Object.keys(data).forEach(function (key) { 
+          Object.keys(data).forEach(function (key) {
             let item = data[key]
             authors.push({
               id: item.id,
@@ -118,7 +118,7 @@ export default {
         .then(json => {
           let data = json['data']
           let genres = []
-          Object.keys(data).forEach(function (key) { 
+          Object.keys(data).forEach(function (key) {
             let item = data[key]
             genres.push({
               id: item.id,
@@ -146,7 +146,7 @@ export default {
         .then(json => {
           let data = json['data']
           let books = []
-          Object.keys(data).forEach(function (key) { 
+          Object.keys(data).forEach(function (key) {
             let item = data[key]
             books.push({
               id: item.id,
@@ -169,15 +169,15 @@ export default {
     },
     filterByAuthor: function (e) {
       this.authorsInFilter.push(e.target.value)
-      let query = '?author='
+      let query = '?authors[]='
       this.authorsInFilter.forEach((item, i) => {
-        if (i == 0) {
-          query += item 
+        if (i === 0) {
+          query += item
         } else {
-          query += '&author=' + item
+          query += '&authors[]=' + item
         }
-      })  
-      fetch('http://book-shop/server/api/books/'+ query)
+      })
+      fetch('http://book-shop/server/api/books/' + query)
       // fetch('http://192.168.0.15/~user16/book-shop/client/api/authors/')
         .then(response => {
           if (response.ok) {
@@ -189,7 +189,7 @@ export default {
           console.log(json)
           let data = json['data']
           let books = []
-          Object.keys(data).forEach(function (key) { 
+          Object.keys(data).forEach(function (key) {
             let item = data[key]
             books.push({
               id: item.id,
@@ -209,7 +209,7 @@ export default {
         .catch(error => {
           console.log(error)
         })
-    },
+    }
     // filterByBrand: function () {
     //   if (this.searchBrand !== '') {
     //     this.cars = this.filteredByBrandCars

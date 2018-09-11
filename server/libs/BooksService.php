@@ -27,22 +27,6 @@ class BooksService
                     LEFT JOIN authors ON authors.id=book_author_relation.author_id
                     LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
                     LEFT JOIN genres ON genres.id=book_genre_relation.genre_id';
-        $whereClause = [];
-        $params = [];
-        // conditions whether authors or genres selected
-        if ($this->queryFilters->hasFilter('authors')) {
-            $inClause = str_repeat('?,', count($this->queryFilters->getAuthors()) - 1) . '?';
-            $whereClause[] = "book_author_relation.author_id IN($inClause)";
-            $params = $this->queryFilters->getAuthors();
-        }
-        if ($this->queryFilters->hasFilter('genres')) {
-            $inClause = str_repeat('?,', count($this->queryFilters->getGenres()) - 1) . '?';
-            $whereClause[] = "book_genre_relation.genre_id IN($inClause)";
-            $params = array_merge($params, $this->queryFilters->getGenres());
-        }
-        if ($whereClause) {
-            $query .= " WHERE " . implode('AND ', $whereClause);
-        }
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $books_array = array();
@@ -251,20 +235,21 @@ class BooksService
         }
     }    
 
-    public function getAllFiltered()
+    public function getAllFiltered($arg)
     {
         $query = 'SELECT books.id as id, books.name as name, books.price as price, books.description as description, genres.name as genre, authors.name as author
                     FROM ' . $this->table . ' as books ' .
                     'LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
                     LEFT JOIN authors ON authors.id=book_author_relation.author_id
                     LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
-                    LEFT JOIN genres ON genres.id=book_genre_relation.genre_id
-                    WHERE authors.id = :author_id';
+                    LEFT JOIN genres ON genres.id=book_genre_relation.genre_id';
+        var_dump($_GET);
         $whereClause = [];
         $params = [];
         // conditions whether authors or genres selected
-        if ($this->queryFilters->hasFilter('authors')) {
-            $inClause = str_repeat('?,', count($this->queryFilters->getAuthors()) - 1) . '?';
+        if ($_GET['authors']) {
+            $inClause = str_repeat('?,', count($_GET['authors']) - 1) . '?';
+            var_dump($inClause);
             $whereClause[] = "book_author_relation.author_id IN($inClause)";
             $params = $this->queryFilters->getAuthors();
         }
@@ -276,6 +261,7 @@ class BooksService
         if ($whereClause) {
             $query .= " WHERE " . implode('AND ', $whereClause);
         }
+        var_dump($query);
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $books_array = array();

@@ -17,12 +17,7 @@
         </ul>
       </div>
 		</nav>
-    <div class='row' style='min-height: 50px;'>
-      <div class='col-sm-12'>
-        <div class='message'>{{msg}}</div>
-      </div>
-    </div>
-    <router-view v-bind:userID='userId' v-on:setUser='setUserID($event)'></router-view>
+    <router-view v-bind:userID='userId' v-on:setUser='setUserID($event)' style='padding-top: 30px'></router-view>
   </div>
 </template>
 

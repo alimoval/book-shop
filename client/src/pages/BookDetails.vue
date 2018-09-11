@@ -7,7 +7,7 @@
             <div class='col-sm-9' style='text-align:left;'>
               <h3 style="font-weight:bold">{{book.name}}</h3>
               <p>
-                    Authors: 
+                    Authors:
                     <span v-for='author in bookAuthors' v-bind:key='author.id'>{{author}}, </span>
                 </p>
                 <p>
@@ -81,7 +81,7 @@ export default {
         .then(json => {
           let data = json['data']
           let books = []
-          Object.keys(data).forEach(function (key) { 
+          Object.keys(data).forEach(function (key) {
             let item = data[key]
             books.push({
               id: item.id,

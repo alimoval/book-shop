@@ -18,8 +18,7 @@ class RESTServer
         list($id, $viewType) = explode(".", $id);
         if ($method == "GET") {
             if('?'.$query == $id){
-                list($param, $value) = explode("=", $query);
-                $result = $service->getAllFiltered($value);
+                $result = $service->getAllFiltered($query);
             } elseif ($id > 0) {
                 $result = $service->getOne($id);
             } else {

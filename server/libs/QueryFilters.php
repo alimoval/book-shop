@@ -18,12 +18,10 @@ class QueryFilters
 
     public static function fromRequest(Request $request)
     {
-        ///////////////// !!!!!!!!!!!!!!!!!!!!!!!!!
-
         $self          = new self();
         $self->genres  = $request->getQueryParams()['genres'] ?? [];
         $self->authors = $request->getQueryParams()['authors'] ?? [];
-///////////////// !!!!!!!!!!!!!!!!!!!!!!!!!
+
         return $self;
     }
 

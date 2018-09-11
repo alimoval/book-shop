@@ -58,10 +58,10 @@ export default {
       this.$http.post('http://book-shop/server/api/users/login', data)
       // this.$http.post('http://192.168.0.15/~user16/rest/client/api/users/login', data)
         .then(response => {
-          if(response.body.id){
+          if (response.body.id) {
             localStorage.setItem('user_id', response.body.id)
             this.$emit('setUser', response.body.id)
-          } else if(response.body.message) {
+          } else if (response.body.message) {
             this.errors.push(response.body.message)
           }
         })
