@@ -7,23 +7,21 @@
       <div class='col-sm-3'></div>
       <div class='col-sm-6'>
         <form v-on:submit.stop.prevent='checkForm' method='post'>
-          <p v-if="errors.length">
-            <b>Пожалуйста исправьте указанные ошибки:</b>
-            <ul>
-              <li v-for="error in errors" v-bind:key='error.id'>{{ error }}</li>
-            </ul>
-          </p>
           <div class='form-group'>
-            <label for='emailInput'>Email address</label>
-            <input type='email' class='form-control' placeholder='Enter email' id='emailInput' v-model='email'>
+            <input type='email' class='form-control' placeholder='Email' v-model='email'>
             <small id='emailHelp' class='form-text text-muted'>We'll never share your email with anyone else.</small>
           </div>
           <div class='form-group'>
-            <label for='pass'>Password</label>
-            <input type='password' class='form-control' id='pass' placeholder='Password' v-model='password'>
+            <input type='password' class='form-control' placeholder='Password' v-model='password'>
           </div>
           <button type='submit' class='btn btn-primary'>Submit</button>
         </form>
+        <p v-if="errors.length" style='padding-top:30px'>
+          <ul>
+            <li v-for="error in errors" v-bind:key='error.id'>{{ error }}</li>
+          </ul>
+        </p>
+        {{message}}
       </div>
     </div>
   </div>
@@ -49,10 +47,10 @@ export default {
       }
       this.errors = []
       if (!this.email) {
-        this.errors.push('Требуется указать email.')
+        this.errors.push('Enter Email.')
       }
       if (!this.password) {
-        this.errors.push('Требуется указать пароль.')
+        this.errors.push('Enter Password.')
       }
     },
     proceedForm: function () {
@@ -60,8 +58,12 @@ export default {
       this.$http.post('http://book-shop/server/api/users/login', data)
       // this.$http.post('http://192.168.0.15/~user16/rest/client/api/users/login', data)
         .then(response => {
-          localStorage.setItem('user_id', response.body.id)
-          this.$emit('setUser', response.body.id)
+          if(response.body.id){
+            localStorage.setItem('user_id', response.body.id)
+            this.$emit('setUser', response.body.id)
+          } else if(response.body.message) {
+            this.errors.push(response.body.message)
+          }
         })
         .catch(error => {
           this.message = error

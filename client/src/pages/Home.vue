@@ -1,40 +1,40 @@
 <template>
   <div class='container'>
     <div class='row'>
-      <div class='col-sm-3 d-flex justify-content-start'>
-        <ul class='list-group' style='text-align:left;'>
-          <li class='list-group-item'>
+      <div class='col-md-3 d-flex justify-content-start'>
+        <div class="row">
+          <div class="col col-sm-6 col-md-12 col-lg-12 col-xl-12" style='text-align:left; margin-bottom: 30px'>
             <p>Authors</p>
             <div class='form-check' v-for='author in authors' v-bind:key='author.id'>
-              <input class='form-check-input' type='checkbox' value='author.id' @click='filterByAuthor'>
-              <label class='form-check-label'>
+              <input class='form-check-input' type='checkbox' v-bind:value='author.id' @click='filterByAuthor'>
+              <label class='form-check-label' style='font-size:14px'>
                 {{author.name}}
               </label>
             </div>
-          </li>
-          <li class='list-group-item'>
+          </div>
+          <div class=" col col-sm-6 col-md-12 col-lg-12 col-xl-12" style='text-align:left; margin-bottom: 30px'>
             <p>Genres</p>
             <div class='form-check' v-for='genre in genres' v-bind:key='genre.id'>
-              <input class='form-check-input' type='checkbox' value='genre.name'>
-              <label class='form-check-label'>
+              <input class='form-check-input' type='checkbox' v-bind:value='genre.id'>
+              <label class='form-check-label' style='font-size:14px'>
                 {{genre.name}}
               </label>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
-      <div class='col-sm-9'>
+      <div class='col col-md-9'>
         <div class='row'>
-          <div class='col-sm-4' v-for='book in books' v-bind:key='book.id'  style='padding-bottom: 20px'>
+          <div class='col-6 col-sm-4 col-xl-3' v-for='book in books' v-bind:key='book.id'  style='padding-bottom: 20px'>
             <router-link :to='`/${book.id}`' onmouseover='this.style="text-decoration: none;"'>
-              <div class='card' style='min-height: 200px'>
+              <div class='card' style='min-height: 200px; background: url("http://softcatalog.info/sites/default/files/styles/program_logo/public/program/logo/ice_book_reader_professional_.png") no-repeat; padding-top: 10px;'>
                 <!-- <img class='card-img-top img-fluid' v-bind:src='author.images' alt='Card image cap'> -->
                 <div class='card-body'>
                   <h5 class='card-title' style='color: #007bff'>{{book.name}}</h5>
                   <p v-for='author in book.authors' v-bind:key='author.id' style="color:black; font-size:14px; line-height:0.9em">
                     {{author}}
                   </p>
-                  <p class='card-text bottom' style='color: tomato'>
+                  <p class='card-text bottom' style='color:tomato;'>
                     <b>${{book.price}}</b>
                   </p>
                 </div>
@@ -55,7 +55,9 @@ export default {
     return {
       authors: [],
       genres: [],
-      books: []
+      books: [],
+      authorsInFilter: [],
+      genresInFilter: []
     }
   },
   created () {
@@ -165,8 +167,48 @@ export default {
           console.log(error)
         })
     },
-    filterByAuthor: function () {
-
+    filterByAuthor: function (e) {
+      this.authorsInFilter.push(e.target.value)
+      let query = '?author='
+      this.authorsInFilter.forEach((item, i) => {
+        if (i == 0) {
+          query += item 
+        } else {
+          query += '&author=' + item
+        }
+      })  
+      fetch('http://book-shop/server/api/books/'+ query)
+      // fetch('http://192.168.0.15/~user16/book-shop/client/api/authors/')
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          }
+          throw new Error('Network response was not ok')
+        })
+        .then(json => {
+          console.log(json)
+          let data = json['data']
+          let books = []
+          Object.keys(data).forEach(function (key) { 
+            let item = data[key]
+            books.push({
+              id: item.id,
+              name: item.name,
+              description: item.description,
+              price: item.price,
+              authors: item.authors,
+              genres: item.genres,
+              discount: item.discount
+            })
+          })
+          return books
+        })
+        .then(books => {
+          this.books = books
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     // filterByBrand: function () {
     //   if (this.searchBrand !== '') {

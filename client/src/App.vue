@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import Nav from './components/Nav'
 export default {
   name: 'App',
   data: function () {
@@ -35,9 +34,6 @@ export default {
       userId: null,
       msg: null
     }
-  },
-  components:{
-    Nav
   },
   created () {
     this.getUserFromLocalStorage()

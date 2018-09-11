@@ -128,22 +128,25 @@ class UsersService
         $this->data = json_decode(file_get_contents("php://input"));
         $this->email = $this->data->email;
         $this->password = $this->data->password;
-
         $query = 'SELECT * FROM ' . $this->table . ' WHERE email = :email AND password = :password';
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':password', $this->password);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $user = array(
-            'id' => $row['id'],
-            'name' => $row['name'],
-            'email' => $row['email'],
-            'password' => $row['password'],
-        );
+        if(!empty($row['id'])){
+            $user = array(
+                'id' => $row['id'],
+                'name' => $row['name'],
+                'email' => $row['email'],
+                'password' => $row['password'],
+            );
+        } else {
+            return array('message' => 'Incorrect User Credentials');
+            printf("Error: %s.\n", $stmt->error);
+        }
 
         return $user;
-
     }
 
     public function register()

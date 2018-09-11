@@ -251,6 +251,52 @@ class BooksService
         }
     }    
 
+    public function getAllFiltered()
+    {
+        $query = 'SELECT books.id as id, books.name as name, books.price as price, books.description as description, genres.name as genre, authors.name as author
+                    FROM ' . $this->table . ' as books ' .
+                    'LEFT JOIN book_author_relation ON books.id=book_author_relation.book_id
+                    LEFT JOIN authors ON authors.id=book_author_relation.author_id
+                    LEFT JOIN book_genre_relation ON books.id=book_genre_relation.book_id
+                    LEFT JOIN genres ON genres.id=book_genre_relation.genre_id
+                    WHERE authors.id = :author_id';
+        $whereClause = [];
+        $params = [];
+        // conditions whether authors or genres selected
+        if ($this->queryFilters->hasFilter('authors')) {
+            $inClause = str_repeat('?,', count($this->queryFilters->getAuthors()) - 1) . '?';
+            $whereClause[] = "book_author_relation.author_id IN($inClause)";
+            $params = $this->queryFilters->getAuthors();
+        }
+        if ($this->queryFilters->hasFilter('genres')) {
+            $inClause = str_repeat('?,', count($this->queryFilters->getGenres()) - 1) . '?';
+            $whereClause[] = "book_genre_relation.genre_id IN($inClause)";
+            $params = array_merge($params, $this->queryFilters->getGenres());
+        }
+        if ($whereClause) {
+            $query .= " WHERE " . implode('AND ', $whereClause);
+        }
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute();
+        $books_array = array();
+        $books_array['data'] = array();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $book = array(
+                'id' => $id,
+                'name' => $name,
+                'description' => $description,
+                'price' => $price,
+                'genre' => $genre,
+                'author' => $author,
+            );
+            array_push($books_array['data'], $book);
+        }
+        $collection = Collection::fromRawData($books_array, Book::class);
+
+        return $collection;
+    }
+
     // public function sendOrder(BookOrder $order)
     // {
     //     $details = $this->getBook($order->getId());
