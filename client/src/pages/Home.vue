@@ -6,7 +6,7 @@
           <div class="col-6 col-md-12" style='text-align:left; margin-bottom: 30px'>
             <p>Authors</p>
             <div class='form-check' v-for='author in authors' v-bind:key='author.id'>
-              <input class='form-check-input' type='checkbox' v-bind:value='author.id' @click='filterByAuthor'>
+              <input class='form-check-input' type='checkbox' v-bind:value='author.id' @click='addAuthorToFilterArray'>
               <label class='form-check-label' style='font-size:14px'>
                 {{author.name}}
               </label>
@@ -15,7 +15,7 @@
           <div class=" col-6 col-md-12" style='text-align:left; margin-bottom: 30px'>
             <p>Genres</p>
             <div class='form-check' v-for='genre in genres' v-bind:key='genre.id'>
-              <input class='form-check-input' type='checkbox' v-bind:value='genre.id'>
+              <input class='form-check-input' type='checkbox' v-bind:value='genre.id' @click='addGenreToFilterArray'>
               <label class='form-check-label' style='font-size:14px'>
                 {{genre.name}}
               </label>
@@ -53,6 +53,7 @@ export default {
   props: ['userID'],
   data: function () {
     return {
+      query: '',
       authors: [],
       genres: [],
       books: [],
@@ -134,8 +135,9 @@ export default {
           console.log(error)
         })
     },
-    fetchBooks: function () {
-      fetch('http://book-shop/server/api/books/')
+    fetchBooks: function (query) {
+      this.query = ''
+      fetch('http://book-shop/server/api/books/' + query)
       // fetch('http://192.168.0.15/~user16/book-shop/client/api/authors/')
         .then(response => {
           if (response.ok) {
@@ -167,75 +169,51 @@ export default {
           console.log(error)
         })
     },
-    filterByAuthor: function (e) {
-      this.authorsInFilter.push(e.target.value)
-      let query = '?authors[]='
+    addAuthorToFilterArray: function (e) {
+      let value = e.target.value
+      if (this.authorsInFilter.indexOf(value) >= 0) {
+        this.authorsInFilter.splice(this.authorsInFilter.indexOf(value), 1)
+        if (this.query === '?') {
+          this.query = ''
+        }
+      } else {
+        this.authorsInFilter.push(value)
+      }
+      this.buildQuery()
+    },
+    buildQuery: function () {
       this.authorsInFilter.forEach((item, i) => {
-        if (i === 0) {
-          query += item
+        if (i === 0 && this.query.indexOf('?') < 0) {
+          this.query += '?authors[]=' + item
         } else {
-          if (query.indexOf(item)) {
-            console.log(query)
-            query = query.replace('authors[]=','')
-            query = query.replace(item,'')
-            console.log(query)
-          } else {
-            query += '&authors[]=' + item
-          }
+          this.query += '&authors[]=' + item
         }
       })
-      fetch('http://book-shop/server/api/books/' + query)
-      // fetch('http://192.168.0.15/~user16/book-shop/client/api/authors/')
-        .then(response => {
-          if (response.ok) {
-            return response.json()
-          }
-          throw new Error('Network response was not ok')
-        })
-        .then(json => {
-          console.log(json)
-          let data = json['data']
-          let books = []
-          Object.keys(data).forEach(function (key) {
-            let item = data[key]
-            books.push({
-              id: item.id,
-              name: item.name,
-              description: item.description,
-              price: item.price,
-              authors: item.authors,
-              genres: item.genres,
-              discount: item.discount
-            })
-          })
-          return books
-        })
-        .then(books => {
-          this.books = books
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      this.genresInFilter.forEach((item, i) => {
+        if (i === 0 && this.query.indexOf('?') < 0) {
+          this.query += '?genres[]=' + item
+        } else {
+          this.query += '&genres[]=' + item
+        }
+      })
+      this.fetchBooks(this.query)
+    },
+    addGenreToFilterArray: function (e) {
+      let value = e.target.value
+      if (this.genresInFilter.indexOf(value) >= 0) {
+        this.genresInFilter.splice(this.genresInFilter.indexOf(value), 1)
+        if (this.query === '?') {
+          this.query = ''
+        }
+      } else {
+        this.genresInFilter.push(value)
+      }
+      this.buildQuery()
+    },
+    resetFilter: function () {
+      this.query = ''
+      this.fetchBooks()
     }
-    // filterByBrand: function () {
-    //   if (this.searchBrand !== '') {
-    //     this.cars = this.filteredByBrandCars
-    //   } else {
-    //     this.cars = this.fullCarsArray
-    //   }
-    // },
-    // filterByModel: function () {
-    //   if (this.searchModel !== '') {
-    //     this.cars = this.filteredByModelCars
-    //   } else {
-    //     this.cars = this.fullCarsArray
-    //   }
-    // },
-    // resetFilter: function () {
-    //   this.searchBrand = ''
-    //   this.searchModel = ''
-    //   this.filterByBrand()
-    // }
   }
 }
 </script>
